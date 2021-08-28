@@ -1,0 +1,31 @@
+#
+# Name: QuickSell
+# Author: mrCookieSlime
+# Maintainer: Shay Punter
+#
+options:
+  sell-gui-rows: 3
+  locked-item: BARRIER
+  sign-prefix: '&7[&eSell&7]'
+  sellall-sign-prefix: '&a&oSell All'
+  pregenerate-all-item-prices: false
+  enable-menu-line: false
+  enable-commands: true
+shop:
+  enable-hierarchy: false
+  enable-logging: true
+boosters:
+  extension-mode: false
+  refresh-every: 10
+commands-on-sell: []
+sound:
+  enabled: true
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+shops:
+  A:
+    name: '&9A - Shop'
+    permission: QuickSell.shop.A
+    itemtype: CHEST
+    lore: []
+list:
+- A
