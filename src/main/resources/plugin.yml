@@ -1,0 +1,15 @@
+name: MinePlugin
+author: Yoreni
+version: ${project.version}
+main: com.yoreni.mineplugin.MinePlugin
+api-version: 1.16
+softdepend:
+  - WorldEdit
+commands:
+  mines:
+    description: A command that manages your prison mines
+    permission: prisonmines.admin
+permissions:
+  prisonmines.admin:
+    description: allows users to use the /mines command which manages mines
+
