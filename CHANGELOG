@@ -3,3 +3,6 @@
 1.1α
   - fixed -0% bug
   - add it so you can remove every block from a mine
+1.2α - 10/9/2021
+  - fixing an error if a file mentions a world that doesnt exist causing the plugin to break. if Multiverse-Core is
+    enabled the plugins loads before the multiverse core worlds.
