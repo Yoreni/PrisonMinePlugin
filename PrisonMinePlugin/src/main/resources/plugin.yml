@@ -3,8 +3,10 @@ author: Yoreni
 version: ${project.version}
 main: com.yoreni.mineplugin.MinePlugin
 api-version: 1.16
+load: POSTWORLD
 softdepend:
   - WorldEdit
+  - Multiverse-Core
 commands:
   mines:
     description: A command that manages your prison mines

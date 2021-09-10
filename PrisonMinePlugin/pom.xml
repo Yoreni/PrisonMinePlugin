@@ -6,7 +6,7 @@
 
     <groupId>com.yoreni</groupId>
     <artifactId>mineplugin</artifactId>
-    <version>1.1α</version>
+    <version>1.2α</version>
     <packaging>jar</packaging>
 
     <name>Mineplugin</name>

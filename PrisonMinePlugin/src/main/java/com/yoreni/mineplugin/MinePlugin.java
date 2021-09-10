@@ -26,19 +26,9 @@ public final class MinePlugin extends JavaPlugin
     public void onEnable()
     {
         instance = this;
-        //Bukkit.getLogger().info(Util.getListOfBlocks().toString());
-        this.getCommand("mines").setExecutor(new MineCommands(this));
-        this.getCommand("mines").setTabCompleter(new MineCommands(this));
-
-        if (getServer().getPluginManager().isPluginEnabled("WorldEdit"))
-        {
-            WORLD_EDIT = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
-        }
-
-        config = new Yaml("config", pluginFolder);
-        config.setConfigSettings(ConfigSettings.PRESERVE_COMMENTS);
-        config.addDefaultsFromInputStream(getClass().getResourceAsStream("/config.yml"));
-        messageHandler = new MessageHandler(this);
+        registerCommands();
+        setupWorldEdit();
+        setupConfigFiles();
 
         Mine.initMineList();
         Bukkit.getLogger().info(String.format("Loaded %d mine(s)", Mine.getMines().size()));
@@ -46,6 +36,8 @@ public final class MinePlugin extends JavaPlugin
         //this resets the mines if they are secldued to reset every x mins
         BukkitTask updateMines = new UpdateMines().runTaskTimer(this,20, 20);
     }
+
+
 
     @Override
     public void onDisable()
@@ -62,5 +54,27 @@ public final class MinePlugin extends JavaPlugin
     public static MessageHandler getMessageHandler()
     {
         return messageHandler;
+    }
+
+    private void registerCommands()
+    {
+        this.getCommand("mines").setExecutor(new MineCommands(this));
+        this.getCommand("mines").setTabCompleter(new MineCommands(this));
+    }
+
+    private void setupConfigFiles()
+    {
+        config = new Yaml("config", pluginFolder);
+        config.setConfigSettings(ConfigSettings.PRESERVE_COMMENTS);
+        config.addDefaultsFromInputStream(getClass().getResourceAsStream("/config.yml"));
+        messageHandler = new MessageHandler(this);
+    }
+
+    private void setupWorldEdit()
+    {
+        if (getServer().getPluginManager().isPluginEnabled("WorldEdit"))
+        {
+            WORLD_EDIT = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
+        }
     }
 }
