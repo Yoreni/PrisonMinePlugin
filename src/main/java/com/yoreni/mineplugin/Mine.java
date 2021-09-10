@@ -395,6 +395,10 @@ class MineComostion
             throw new IllegalArgumentException("Items can not be added to mines");
         }
 
+        //the chance gets rounded to 10dp to stop any wiredness
+        chance = Math.round(chance * 1e10);
+        chance /= 1e10;
+
         compostion.put(block, chance);
     }
 
