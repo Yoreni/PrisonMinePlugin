@@ -130,6 +130,16 @@ public class Cuboid extends Shape
         }
 
         World world = Bukkit.getWorld(file.getString("world"));
+        if(world == null)
+        {
+            final String worldName = file.getString("world");
+            Bukkit.getLogger().info(Bukkit.getWorlds().toString());
+            Bukkit.getLogger().info(Bukkit.getWorlds().contains(worldName) + "");
+            Bukkit.getLogger().info(Bukkit.getWorld("mines").toString());
+            Bukkit.getLogger().info(worldName.equals("mines") + "");
+            throw new NullPointerException(String.format("The world (%s) defined in %s doesnt exist."
+                    , worldName, file.getName()));
+        }
 
         Location pos1 = new Location(world,
                 file.getInt("pos1.x"), file.getInt("pos1.y"),
