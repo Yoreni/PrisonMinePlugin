@@ -226,7 +226,6 @@ public class Yml
     {
         final String currentVersion = plugin.getDescription().getVersion();
 
-        Bukkit.getLogger().info(currentVersion);
         try
         {
             ConfigUpdater.update(plugin, file.getName(), file, Arrays.asList("config-version"));
