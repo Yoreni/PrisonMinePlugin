@@ -182,6 +182,11 @@ public class Yml
         return config.getStringList(s);
     }
 
+    public float getFloat(String s)
+    {
+        return (float) getDouble(s);
+    }
+
     public Object get(String s)
     {
         return config.get(s);

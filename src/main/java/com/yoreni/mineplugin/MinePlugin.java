@@ -1,8 +1,9 @@
 package com.yoreni.mineplugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import de.leonhard.storage.Yaml;
-import de.leonhard.storage.internal.settings.ConfigSettings;
+import com.yoreni.mineplugin.util.Yml;
+//import de.leonhard.storage.Yaml;
+//import de.leonhard.storage.internal.settings.ConfigSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -20,7 +21,7 @@ public final class MinePlugin extends JavaPlugin
     public static WorldEditPlugin WORLD_EDIT = null;
     private static MessageHandler messageHandler;
 
-    Yaml config;
+    Yml config;
 
     @Override
     public void onEnable()
@@ -64,9 +65,10 @@ public final class MinePlugin extends JavaPlugin
 
     private void setupConfigFiles()
     {
-        config = new Yaml("config", pluginFolder);
-        config.setConfigSettings(ConfigSettings.PRESERVE_COMMENTS);
-        config.addDefaultsFromInputStream(getClass().getResourceAsStream("/config.yml"));
+        config = new Yml(this, "config");
+        config.setDefaultsFromJar();
+        //config.setConfigSettings(ConfigSettings.PRESERVE_COMMENTS);
+        //config.addDefaultsFromInputStream(getClass().getResourceAsStream("/config.yml"));
         messageHandler = new MessageHandler(this);
     }
 

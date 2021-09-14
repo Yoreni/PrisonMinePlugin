@@ -1,6 +1,6 @@
 package com.yoreni.mineplugin.util.shape;
 
-import de.leonhard.storage.Yaml;
+import com.yoreni.mineplugin.util.Yml;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -68,20 +68,19 @@ public class Cuboid extends Shape
     }
 
     @Override
-    public void writeToYaml(Yaml file, String path)
+    public void writeToYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
+        //file.setPathPrefix(path);
+        file.set(path + ".shape", "cuboid");
+        file.set(path + ".world", getWorld().getName());
 
-        file.set("shape", "cuboid");
-        file.set("world", getWorld().getName());
+        file.set(path + ".pos1.x", pos1.getBlockX());
+        file.set(path + ".pos1.y", pos1.getBlockY());
+        file.set(path + ".pos1.z", pos1.getBlockZ());
 
-        file.set("pos1.x", pos1.getBlockX());
-        file.set("pos1.y", pos1.getBlockY());
-        file.set("pos1.z", pos1.getBlockZ());
-
-        file.set("pos2.x", pos2.getBlockX());
-        file.set("pos2.y", pos2.getBlockY());
-        file.set("pos2.z", pos2.getBlockZ());
+        file.set(path + ".pos2.x", pos2.getBlockX());
+        file.set(path + ".pos2.y", pos2.getBlockY());
+        file.set(path + ".pos2.z", pos2.getBlockZ());
     }
 
     @Override
@@ -120,34 +119,29 @@ public class Cuboid extends Shape
         return width * length * height;
     }
 
-    public static Shape readFromYaml(Yaml file, String path)
+    public static Shape readFromYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
+        //file.setPathPrefix(path);
 
-        if(!file.getString("shape").equals("cuboid"))
+        if(!file.getString(path + ".shape").equals("cuboid"))
         {
             return null;
         }
-
-        World world = Bukkit.getWorld(file.getString("world"));
+        World world = Bukkit.getWorld(file.getString(path + ".world"));
         if(world == null)
         {
-            final String worldName = file.getString("world");
-            Bukkit.getLogger().info(Bukkit.getWorlds().toString());
-            Bukkit.getLogger().info(Bukkit.getWorlds().contains(worldName) + "");
-            Bukkit.getLogger().info(Bukkit.getWorld("mines").toString());
-            Bukkit.getLogger().info(worldName.equals("mines") + "");
+            final String worldName = file.getString(path + ".world");
             throw new NullPointerException(String.format("The world (%s) defined in %s doesnt exist."
                     , worldName, file.getName()));
         }
 
         Location pos1 = new Location(world,
-                file.getInt("pos1.x"), file.getInt("pos1.y"),
-                file.getInt("pos1.z"));
+                file.getInt(path + ".pos1.x"), file.getInt(path + ".pos1.y"),
+                file.getInt(path + ".pos1.z"));
 
         Location pos2 = new Location(world,
-                file.getInt("pos2.x"), file.getInt("pos2.y"),
-                file.getInt("pos2.z"));
+                file.getInt(path + ".pos2.x"), file.getInt(path + ".pos2.y"),
+                file.getInt(path + ".pos2.z"));
 
         return new Cuboid(pos1, pos2);
     }

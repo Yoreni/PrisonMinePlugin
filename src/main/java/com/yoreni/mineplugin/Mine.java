@@ -1,9 +1,9 @@
 package com.yoreni.mineplugin;
 
+import com.yoreni.mineplugin.util.Yml;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
 import com.yoreni.mineplugin.util.shape.Shape;
-import de.leonhard.storage.Yaml;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -19,7 +19,7 @@ public class Mine
 {
     private static List<Mine> mines = new ArrayList<Mine>();
 
-    private String name = null;
+    private final String name;
     private Shape shape;
     private MineComostion compostion;
     private int resetInterval = 0;
@@ -82,13 +82,13 @@ public class Mine
     public static void initMineList()
     {
         List<Mine> mines = new ArrayList<Mine>();
-        String minesFilePath = MinePlugin.getInstance().pluginFolder + "/mines";
+        String minesFilePath = "plugins/" + MinePlugin.getInstance().getName() + "/mines";
         File minesDir = new File(minesFilePath);
         minesDir.mkdir();
 
         for (File file : minesDir.listFiles())
         {
-            Yaml yaml = new Yaml(file);
+            Yml yaml = new Yml(MinePlugin.getInstance(), file);
             Mine mine = Mine.readFromYaml(yaml);
             mines.add(mine);
         }
@@ -129,7 +129,7 @@ public class Mine
         }
 
         final int BLOCKS_PER_TICK =
-                MinePlugin.getInstance().config.getOrSetDefault("mineResetBlocksPerTick", 500);
+                Integer.parseInt(MinePlugin.getInstance().config.getOrSetDefault("mineResetBlocksPerTick", 500));
 
         /*
             Some blocks of the mine will be reset every tick untill all of the blocks are reset
@@ -180,7 +180,7 @@ public class Mine
         }
         else
         {
-            long nextResetTime = lastReset + (resetInterval * 60000);
+            long nextResetTime = lastReset + (resetInterval * 60000L);
             return nextResetTime - System.currentTimeMillis();
         }
     }
@@ -252,7 +252,7 @@ public class Mine
         this.teleportPosition = teleportPosition;
     }
 
-    private static Mine readFromYaml(Yaml file)
+    private static Mine readFromYaml(Yml file)
     {
         String name = file.getString("name");
         int resetInterval = file.getInt("settings.resetInterval");
@@ -261,16 +261,15 @@ public class Mine
         Mine mine = new Mine(shape, name);
         mine.compostion = MineComostion.readFromYaml(file, "blocks");
 
-        file.setPathPrefix("settings");
         mine.resetInterval = resetInterval;
-        if(file.getMapParameterized("").containsKey("teleportPosition"))
+        if(file.isSet("settings.teleportPosition"))
         {
-            World world = Bukkit.getWorld(file.getString("teleportLocation.world"));
-            int x = file.getInt("teleportLocation.x");
-            int y = file.getInt("teleportLocation.y");
-            int z = file.getInt("teleportLocation.z");
-            float yaw = file.getFloat("teleportLocation.yaw");
-            float pitch = file.getFloat("teleportLocation.pitch");
+            World world = Bukkit.getWorld(file.getString("settings.teleportLocation.world"));
+            int x = file.getInt("settings.teleportLocation.x");
+            int y = file.getInt("settings.teleportLocation.y");
+            int z = file.getInt("settings.teleportLocation.z");
+            float yaw = file.getFloat("settings.teleportLocation.yaw");
+            float pitch = file.getFloat("settings.teleportLocation.pitch");
 
             if(world != null)
             {
@@ -283,7 +282,8 @@ public class Mine
 
     private void writeToYaml()
     {
-        Yaml yaml = new Yaml(this.getName(), MinePlugin.getInstance().pluginFolder + "/mines");
+        Yml yaml = new Yml(MinePlugin.getInstance(),
+                "mines/" + this.getName());
         yaml.set("name", getName());
         yaml.set("settings.resetInterval", resetInterval);
 
@@ -291,15 +291,15 @@ public class Mine
         compostion.writeToYaml(yaml, "blocks");
 
         // saving mine settings
-        yaml.setPathPrefix("settings");
+        //yaml.setPathPrefix("settings");
         if(teleportPosition != null)
         {
-            yaml.set("teleportLocation.world", teleportPosition.getWorld().getName());
-            yaml.set("teleportLocation.x", teleportPosition.getBlockX());
-            yaml.set("teleportLocation.y", teleportPosition.getBlockY());
-            yaml.set("teleportLocation.z", teleportPosition.getBlockZ());
-            yaml.set("teleportLocation.yaw", teleportPosition.getYaw());
-            yaml.set("teleportLocation.pitch", teleportPosition.getPitch());
+            yaml.set("settings.teleportLocation.world", teleportPosition.getWorld().getName());
+            yaml.set("settings.teleportLocation.x", teleportPosition.getBlockX());
+            yaml.set("settings.teleportLocation.y", teleportPosition.getBlockY());
+            yaml.set("settings.teleportLocation.z", teleportPosition.getBlockZ());
+            yaml.set("settings.teleportLocation.yaw", teleportPosition.getYaw());
+            yaml.set("settings.teleportLocation.pitch", teleportPosition.getPitch());
         }
     }
 }
@@ -327,18 +327,18 @@ class MineComostion
      * @param path the path of where you want it to be
      * @return the object it created
      */
-    public static MineComostion readFromYaml(Yaml file, String path)
+    public static MineComostion readFromYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
+        //file.setPathPrefix(path);
         MineComostion mineComostion = new MineComostion();
 
-        Map<String, Double> map = file.getMapParameterized("");
+        @NotNull Map<String, Object> map = file.getValues(path);
         for(String key : map.keySet())
         {
             Material block = Material.getMaterial(key);
             if(block != null)
             {
-                double chance = Double.parseDouble(((Object) map.get(key)).toString());
+                double chance = Double.parseDouble(map.get(key).toString());
                 if(chance > 0)
                 {
                     mineComostion.addBlock(block, chance);
@@ -355,13 +355,13 @@ class MineComostion
      * @param file the file you want to write it to
      * @param path the path of where in the file you want to write it
      */
-    public void writeToYaml(Yaml file, String path)
+    public void writeToYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
+        //file.setPathPrefix(path);
 
         //this removes the blocks in the mine of the config file that isnt in the compistion list
         //this is to stop the mines messing up when a block has been removed
-        Map<String, Double> existingBlocksInFile = file.getMapParameterized("");
+        @NotNull Map<String, Object> existingBlocksInFile = file.getValues(path);
         for(String key : existingBlocksInFile.keySet())
         {
             Material block = Material.getMaterial(key);
@@ -378,7 +378,7 @@ class MineComostion
         for(Material block : compostion.keySet())
         {
             double chance = compostion.get(block);
-            file.set(block.toString(), chance);
+            file.set(path + "." + block.toString(), chance);
         }
     }
 
