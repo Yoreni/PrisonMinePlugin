@@ -227,6 +227,11 @@ public class Yml
         return file.getName();
     }
 
+    public void rename(String newName) {
+        File newFile = new File(file.getParent() + "/" + newName + ".yml");
+        file.renameTo(newFile);
+    }
+
     public void setDefaultsFromJar()
     {
         final String currentVersion = plugin.getDescription().getVersion();

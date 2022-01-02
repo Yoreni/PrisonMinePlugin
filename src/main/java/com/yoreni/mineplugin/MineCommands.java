@@ -1,9 +1,6 @@
 package com.yoreni.mineplugin;
 
-import com.yoreni.mineplugin.util.MessageHandler;
-import com.yoreni.mineplugin.util.Placeholder;
-import com.yoreni.mineplugin.util.Util;
-import com.yoreni.mineplugin.util.WorldEditRegion;
+import com.yoreni.mineplugin.util.*;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
 import com.yoreni.mineplugin.util.shape.Shape;
@@ -11,7 +8,6 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -50,6 +46,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
             else if(args[0].equalsIgnoreCase("create"))
             {
+                if(!sender.hasPermission("prisonmines.admin.create"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 if(args.length < 2)
                 {
                     sender.sendMessage("usage /mines create <name>");
@@ -63,20 +65,16 @@ public class MineCommands implements CommandExecutor, TabCompleter
                     return true;
                 }
 
-                Shape shape;
                 String shapeName = args.length < 3 ? "cuboid" : args[2];
-                if(shapeName.equals("cylinder"))
+                Shape shape;
+                try
                 {
-                    shape = new Cylinder(region.getPos1(), region.getPos2());
+                    shape = createShape(region, shapeName);
                 }
-                else
+                catch (IllegalArgumentException exception)
                 {
-                    if(!shapeName.equals("cuboid"))
-                    {
-                        MinePlugin.getMessageHandler().sendMessage(sender, "invalid-shape");
-                        return true;
-                    }
-                    shape = new Cuboid(region.getPos1(), region.getPos2());
+                    MinePlugin.getMessageHandler().sendMessage(sender, "invalid-shape");
+                    return true;
                 }
 
                 if(Mine.get(args[1]) != null)
@@ -93,6 +91,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("add"))
             {
+                if(!sender.hasPermission("prisonmines.admin.add"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 if(args.length < 4)
                 {
                     sender.sendMessage("usage /mines add <name> <block> <percent>");
@@ -100,7 +104,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 }
 
                 //getting and validating the mine
-                Mine mine = validdateMine(args[1], sender);
+                Mine mine = validateMine(args[1], sender);
                 if(mine == null)
                     return true;
 
@@ -122,13 +126,20 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("remove"))
             {
-                if (args.length < 3) {
+                if(!sender.hasPermission("prisonmines.admin.remove"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
+                if (args.length < 3)
+                {
                     sender.sendMessage("usage /mines remove <name> <block>");
                     return true;
                 }
 
                 //getting and validating the mine
-                Mine mine = validdateMine(args[1], sender);
+                Mine mine = validateMine(args[1], sender);
                 if (mine == null)
                     return true;
 
@@ -160,6 +171,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("reset"))
             {
+                if(!sender.hasPermission("prisonmines.admin.reset"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 if(args.length < 2)
                 {
                     sender.sendMessage("usage /mines reset <name>");
@@ -167,7 +184,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 }
 
                 //getting and validating the mine
-                Mine mine = validdateMine(args[1], sender);
+                Mine mine = validateMine(args[1], sender);
                 if(mine == null)
                     return true;
 
@@ -177,46 +194,60 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("resize"))
             {
+                if(!sender.hasPermission("prisonmines.admin.resize"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 if(args.length < 2)
                 {
                     sender.sendMessage("usage /mines resize <name>");
                     return true;
                 }
 
-                Mine mine = validdateMine(args[1], sender);
+                Mine mine = validateMine(args[1], sender);
                 if(mine == null)
                     return true;
 
-                //TODO add a get shape method
                 WorldEditRegion region = new WorldEditRegion((Player) sender);
-                Shape shape;
+                if(!region.hasValidRegion())
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "must-make-WE-region");
+                    return true;
+                }
                 String shapeName = args.length < 3 ? mine.getShape().getName() : args[2];
-                if(shapeName.equals("cylinder"))
+
+                Shape shape;
+                try
                 {
-                    shape = new Cylinder(region.getPos1(), region.getPos2());
+                    shape = createShape(region, shapeName);
                 }
-                else
+                catch (IllegalArgumentException exception)
                 {
-                    if(!shapeName.equals("cuboid"))
-                    {
-                        MinePlugin.getMessageHandler().sendMessage(sender, "invalid-shape");
-                        return true;
-                    }
-                    shape = new Cuboid(region.getPos1(), region.getPos2());
+                    MinePlugin.getMessageHandler().sendMessage(sender, "invalid-shape");
+                    return true;
                 }
+
 
                 mine.setShape(shape);
                 sender.sendMessage("Mine " + args[1] + " resized.");
             }
             else if(args[0].equalsIgnoreCase("info"))
             {
+                if(!sender.hasPermission("prisonmines.admin.info"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 if(args.length < 2)
                 {
                     sender.sendMessage("usage /mines info <name>");
                     return true;
                 }
 
-                Mine mine = validdateMine(args[1], sender);
+                Mine mine = validateMine(args[1], sender);
                 if(mine == null)
                     return true;
 
@@ -254,6 +285,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("list"))
             {
+                if(!sender.hasPermission("prisonmines.admin.list"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 MessageHandler messageHandler = MinePlugin.getMessageHandler();
 
                 ArrayList<TextComponent> infoLines = new ArrayList<TextComponent>();
@@ -288,12 +325,52 @@ public class MineCommands implements CommandExecutor, TabCompleter
                     }
                 }
             }
+            else if(args[0].equalsIgnoreCase("rename")) {
+                if(!sender.hasPermission("prisonmines.admin.rename"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
+                if(args.length < 2)
+                {
+                    sender.sendMessage("usage /mines rename <mine> <new name>");
+                    return true;
+                }
+
+                Mine mine = validateMine(args[1], sender);
+                if(mine == null)
+                    return true;
+
+                String newName = args[2];
+                if(Mine.get(newName) != null)
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "pick-another-name",
+                            new Placeholder("%mine%", args[1]));
+                    return true;
+                }
+
+                Yml yaml = new Yml(MinePlugin.getInstance(), "mines/" + mine.getName());
+                yaml.rename(newName);
+                yaml.set("name", newName);
+                mine.setName(newName);
+
+                MinePlugin.getMessageHandler().sendMessage(sender, "mine-rename-success",
+                        new Placeholder("%oldname%", args[1]),
+                        new Placeholder("%newname%", newName));
+            }
             else if(args[0].equalsIgnoreCase("help"))
             {
                 showHelpMenu(sender);
             }
             else if(args[0].equalsIgnoreCase("settings"))
             {
+                if(!sender.hasPermission("prisonmines.admin.settings"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
                 if (args[2].equalsIgnoreCase("resetInterval"))
                 {
                     if(args.length < 4)
@@ -302,7 +379,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                         return true;
                     }
 
-                    Mine mine = validdateMine(args[1], sender);
+                    Mine mine = validateMine(args[1], sender);
                     if(mine == null)
                         return true;
 
@@ -329,7 +406,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                         return true;
                     }
 
-                    Mine mine = validdateMine(args[1], sender);
+                    Mine mine = validateMine(args[1], sender);
                     if(mine == null)
                         return true;
 
@@ -441,7 +518,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         MinePlugin.getMessageHandler().sendMessage(sender, "help-menu");
     }
 
-    private Mine validdateMine(String mineName, CommandSender sender)
+    private Mine validateMine(String mineName, CommandSender sender)
     {
         Mine mine = Mine.get(mineName);
         if(mine == null)
@@ -452,5 +529,21 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         return mine;
+    }
+
+    private Shape createShape(WorldEditRegion region, String type)
+    {
+        if(type.equalsIgnoreCase("cuboid"))
+        {
+            return new Cuboid(region.getPos1(), region.getPos2());
+        }
+        else if(type.equalsIgnoreCase("cylinder"))
+        {
+            return new Cylinder(region.getPos1(), region.getPos2());
+        }
+        else
+        {
+            throw new IllegalArgumentException("Invalid shape type");
+        }
     }
 }

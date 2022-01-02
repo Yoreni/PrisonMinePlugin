@@ -19,7 +19,7 @@ public class Mine
 {
     private static List<Mine> mines = new ArrayList<Mine>();
 
-    private final String name;
+    private String name;
     private Shape shape;
     private MineComostion compostion;
     private int resetInterval = 0;
@@ -107,6 +107,10 @@ public class Mine
     public String getName()
     {
         return name;
+    }
+
+    public void setName(String newName) {
+        name = newName;
     }
 
     public MineComostion getCompostion()
@@ -291,7 +295,6 @@ public class Mine
         compostion.writeToYaml(yaml, "blocks");
 
         // saving mine settings
-        //yaml.setPathPrefix("settings");
         if(teleportPosition != null)
         {
             yaml.set("settings.teleportLocation.world", teleportPosition.getWorld().getName());

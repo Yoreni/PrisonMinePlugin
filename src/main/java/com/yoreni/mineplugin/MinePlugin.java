@@ -2,8 +2,6 @@ package com.yoreni.mineplugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.yoreni.mineplugin.util.Yml;
-//import de.leonhard.storage.Yaml;
-//import de.leonhard.storage.internal.settings.ConfigSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
