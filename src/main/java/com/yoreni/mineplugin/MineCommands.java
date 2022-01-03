@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -325,7 +326,8 @@ public class MineCommands implements CommandExecutor, TabCompleter
                     }
                 }
             }
-            else if(args[0].equalsIgnoreCase("rename")) {
+            else if(args[0].equalsIgnoreCase("rename"))
+            {
                 if(!sender.hasPermission("prisonmines.admin.rename"))
                 {
                     MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
@@ -358,6 +360,38 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 MinePlugin.getMessageHandler().sendMessage(sender, "mine-rename-success",
                         new Placeholder("%oldname%", args[1]),
                         new Placeholder("%newname%", newName));
+
+            }
+            else if(args[0].equalsIgnoreCase("delete"))
+            {
+                if (!sender.hasPermission("prisonmines.admin.delete"))
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    return true;
+                }
+
+                if (args.length < 2) {
+                    sender.sendMessage("usage /mines delete <mine>");
+                    return true;
+                }
+
+                Mine mine = validateMine(args[1], sender);
+                if (mine == null)
+                    return true;
+
+                if(args.length >= 3 && args[2].equals("confirm"))
+                {
+                    Yml yaml = new Yml(MinePlugin.getInstance(), "mines/" + mine.getName());
+                    yaml.delete();
+                    Mine.getMines().remove(mine);
+                    MinePlugin.getMessageHandler().sendMessage(sender, "mine-delete-success",
+                            new Placeholder("%mine%", mine.getName()));
+                }
+                else
+                {
+                    MinePlugin.getMessageHandler().sendMessage(sender, "mine-delete-prompt",
+                            new Placeholder("%mine%", mine.getName()));
+                }
             }
             else if(args[0].equalsIgnoreCase("help"))
             {
@@ -448,7 +482,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         if (args.length == 1)
         {
-            String[] commands = {"create","add", "reset", "remove", "resize", "settings", "info", "list", "help"};
+            String[] commands = {"create","add", "reset", "remove", "resize", "settings", "info", "list", "help", "rename", "delete"};
             StringUtil.copyPartialMatches(args[0], Arrays.asList(commands), showOnTabComplete);
             return showOnTabComplete;
         }

@@ -232,6 +232,10 @@ public class Yml
         file.renameTo(newFile);
     }
 
+    public void delete() {
+        file.delete();
+    }
+
     public void setDefaultsFromJar()
     {
         final String currentVersion = plugin.getDescription().getVersion();

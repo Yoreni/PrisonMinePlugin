@@ -34,3 +34,6 @@ access to /mines settings
 ### prisonmines.admin.rename
 access to /mines rename
 
+### prisonmines.admin.delete
+access to /mines delete
+
