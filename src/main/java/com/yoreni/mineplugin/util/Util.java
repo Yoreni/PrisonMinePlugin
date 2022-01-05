@@ -40,14 +40,13 @@ public class Util
             number = 0;
         }
 
-        DecimalFormat format = new DecimalFormat("#.###############");;
         number *= 100;
 
         // rounding the number
         number *= Math.pow(10, dp);
         number = Math.round(number);
         number /= Math.pow(10, dp);
-        String percent = format.format(number);
+        String percent = toCommas(number);
 
         //some langauges write percentages in differnt ways this is so it acounts for that
         percent = MinePlugin.getMessageHandler().get("number.percent-format",
@@ -91,6 +90,34 @@ public class Util
         {
             return d + "d " + h + "h";
         }
+    }
+
+    /**
+     * sperates a number with commas to make it more readible eg. 23432345 = 23,432,345
+     *
+     * @param number
+     * @return a String
+     */
+    public static String toCommas(double number)
+    {
+        return toCommas(number, "#,###.###############");
+    }
+
+    public static String toCommas(double number, String format)
+    {
+        String commaNumber = new DecimalFormat(format).format(number);
+
+        /*
+            other languages use different symbols for decimal points and thousand separators
+            so tis accounts for this
+         */
+        final String thousandsSeperator = MinePlugin.getMessageHandler().get("number.thousand-separator");
+        final String decimalPoint = MinePlugin.getMessageHandler().get("number.decimal-point");
+
+        commaNumber = commaNumber.replace(",", "a").replace(".", "b");
+        commaNumber = commaNumber.replace("a", thousandsSeperator).replace("b", decimalPoint);
+
+        return commaNumber;
     }
 
     private static void initListOfBlocks()

@@ -4,6 +4,7 @@
 
 package com.yoreni.mineplugin;
 
+import com.yoreni.mineplugin.mine.Mine;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class UpdateMines extends BukkitRunnable
@@ -18,7 +19,7 @@ public class UpdateMines extends BukkitRunnable
     {
         for(Mine mine : Mine.getMines())
         {
-            if (mine.getTimeUntillNextReset() < 0)
+            if (mine.isResetDue())
             {
                 mine.reset();
             }

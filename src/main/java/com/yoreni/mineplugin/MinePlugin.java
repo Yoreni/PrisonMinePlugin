@@ -1,6 +1,8 @@
 package com.yoreni.mineplugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
+import com.yoreni.mineplugin.mine.Mine;
+import com.yoreni.mineplugin.mine.MineListener;
 import com.yoreni.mineplugin.util.Yml;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -15,11 +17,10 @@ public final class MinePlugin extends JavaPlugin
      */
     public final String pluginFolder = "plugins/" + this.getName();
 
-    private static MinePlugin instance;
     public static WorldEditPlugin WORLD_EDIT = null;
+    private static MinePlugin instance;
     private static MessageHandler messageHandler;
-
-    Yml config;
+    private static Yml config;
 
     @Override
     public void onEnable()
@@ -34,6 +35,7 @@ public final class MinePlugin extends JavaPlugin
 
         //this resets the mines if they are secldued to reset every x mins
         BukkitTask updateMines = new UpdateMines().runTaskTimer(this,20, 20);
+        Bukkit.getPluginManager().registerEvents(new MineListener(), this);
     }
 
 
@@ -53,6 +55,10 @@ public final class MinePlugin extends JavaPlugin
     public static MessageHandler getMessageHandler()
     {
         return messageHandler;
+    }
+
+    public static Yml getConfigFile() {
+        return config;
     }
 
     private void registerCommands()

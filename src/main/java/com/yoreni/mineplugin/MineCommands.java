@@ -1,5 +1,7 @@
 package com.yoreni.mineplugin;
 
+import com.yoreni.mineplugin.mine.Mine;
+import com.yoreni.mineplugin.mine.MineResetCondition;
 import com.yoreni.mineplugin.util.*;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
@@ -19,7 +21,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -257,13 +258,29 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 infoLines.add(messageHandler.get("mine-info.title",
                         new Placeholder("%mine%", mine.getName())
                 ));
-                if(mine.getResetInterval() > 0)
+
+                final double percentMined = mine.getBlocksBroken() / (double) mine.getShape().getVolume();
+                String minedText = messageHandler.get("mine-info.mined-info",
+                        new Placeholder("%mined%", Util.toCommas(mine.getBlocksBroken())),
+                        new Placeholder("%volume%", Util.toCommas(mine.getShape().getVolume())),
+                        new Placeholder("%percentmined%", Util.doubleToPercent(1 - percentMined,0)),
+                        new Placeholder("%percentleft%", Util.doubleToPercent(percentMined,0)));
+                infoLines.add(minedText);
+
+                if(mine.getResetCondition() == MineResetCondition.TIMED_INTERVAL)
                 {
-                    String text = messageHandler.get("mine-info.reset-info",
+                    String text = messageHandler.get("mine-info.reset-info-time",
                             new Placeholder("%interval%", mine.getResetInterval() + ""),
                             new Placeholder("%timeleft%", Util.formatTime(mine.getTimeUntillNextReset())));
                     infoLines.add(text);
                 }
+                else if(mine.getResetCondition() == MineResetCondition.PERCENT_EMPTY)
+                {
+                    String text = messageHandler.get("mine-info.reset-info-percentage",
+                            new Placeholder("%resetpercentage%", Util.doubleToPercent(mine.getResetPercentage(), 0)));
+                    infoLines.add(text);
+                }
+
                 infoLines.add("");
                 infoLines.add(messageHandler.get("mine-info.contents"));
                 for(Material block : mine.getCompostion().getBlocks())
@@ -424,12 +441,38 @@ public class MineCommands implements CommandExecutor, TabCompleter
                     {
                         MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-change-success",
                                 new Placeholder("%mine%", args[1]),
-                                new Placeholder("time", String.valueOf(resetInterval)));
+                                new Placeholder("%time%", String.valueOf(resetInterval)));
                     }
                     else
                     {
                         MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
                                 new Placeholder("%mine%", args[1]));
+                    }
+                }
+                if (args[2].equalsIgnoreCase("resetPercent"))
+                {
+                    if(args.length < 4)
+                    {
+                        sender.sendMessage("Usage /mines settings <name> resetPercent <percent>");
+                        return true;
+                    }
+
+                    Mine mine = validateMine(args[1], sender);
+                    if(mine == null)
+                        return true;
+
+                    int resetPercentage = Integer.parseInt(args[3]);
+
+                    if(resetPercentage >= 0 && resetPercentage < 100)
+                    {
+                        mine.setResetPercentage(resetPercentage);
+                        MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-percent-change-success",
+                                new Placeholder("%mine%", args[1]),
+                                new Placeholder("%percent%", Util.doubleToPercent(resetPercentage / 100D, 0)));
+                    }
+                    else
+                    {
+                        MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-percent-invalid-number");
                     }
                 }
                 else if (args[2].equalsIgnoreCase("teleportLocation"))
@@ -454,7 +497,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                     Location teleportPosition = new Location(world, x, y, z, loc.getYaw(), loc.getPitch());
 
                     mine.setTeleportPosition(teleportPosition);
-                    MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-change-success",
+                    MinePlugin.getMessageHandler().sendMessage(sender, "mine-tp-location-change-success",
                             new Placeholder("%mine%", args[1]),
                             new Placeholder("%x%", String.valueOf(x)),
                             new Placeholder("%y%", String.valueOf(y)),
@@ -538,7 +581,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("settings"))
             {
-                String[] commands = {"resetInterval", "teleportLocation"};
+                String[] commands = {"resetInterval", "teleportLocation","resetPercent"};
                 StringUtil.copyPartialMatches(args[2], Arrays.asList(commands), showOnTabComplete);
                 return showOnTabComplete;
             }

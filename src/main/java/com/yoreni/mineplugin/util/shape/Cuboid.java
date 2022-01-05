@@ -113,9 +113,9 @@ public class Cuboid extends Shape
     @Override
     public int getVolume()
     {
-        final int width = Math.abs(pos1.getBlockX() - pos2.getBlockX());
-        final int length = Math.abs(pos1.getBlockZ() - pos2.getBlockZ());
-        final int height = Math.abs(pos1.getBlockY() - pos2.getBlockY());
+        final int width = Math.abs(pos1.getBlockX() - pos2.getBlockX()) + 1;
+        final int length = Math.abs(pos1.getBlockZ() - pos2.getBlockZ()) + 1;
+        final int height = Math.abs(pos1.getBlockY() - pos2.getBlockY()) + 1;
         return width * length * height;
     }
 

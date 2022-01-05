@@ -14,8 +14,11 @@
   - added /mines rename so you can rename mines
 4α - 3/1/2022
   - added the ablity to delete mines with /mines delete
+5α - 5/1/2022
+  - moved the mine composition class to its own file
+  - the mines now know much of them have been mined
+  - the mines can automatically reset if a specified % of the mine has been mined
 
 TODO
  - add spigot support
- - add setting where you can reset the after a certain % has been mined
  - update to 1.18
