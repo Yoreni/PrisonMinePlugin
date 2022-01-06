@@ -18,6 +18,8 @@
   - moved the mine composition class to its own file
   - the mines now know much of them have been mined
   - the mines can automatically reset if a specified % of the mine has been mined
+5.1α - 6/1/2022
+  - added /mines rename and /mines delete to the help menu
 
 TODO
  - add spigot support

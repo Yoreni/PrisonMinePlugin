@@ -38,6 +38,8 @@ help-menu:
   - "&e/mines reset <mineName> &fresets a mine"
   - "&e/mines info <mineName> &ftells you infomation about a mine"
   - "&e/mines list &flists all mines"
+  - "&e/mines rename <mineName> &fchanges a mines name"
+  - "&e/mines delete <mineName> &fdeletes a mines"
   - "&e/mines help &fshows this help menu"
 number:
   percent-format: "number%"

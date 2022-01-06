@@ -12,11 +12,6 @@ import com.yoreni.mineplugin.util.MessageHandler;
 
 public final class MinePlugin extends JavaPlugin
 {
-    /**
-     * The file location where the data and config will be
-     */
-    public final String pluginFolder = "plugins/" + this.getName();
-
     public static WorldEditPlugin WORLD_EDIT = null;
     private static MinePlugin instance;
     private static MessageHandler messageHandler;
@@ -33,7 +28,6 @@ public final class MinePlugin extends JavaPlugin
         Mine.initMineList();
         Bukkit.getLogger().info(String.format("Loaded %d mine(s)", Mine.getMines().size()));
 
-        //this resets the mines if they are secldued to reset every x mins
         BukkitTask updateMines = new UpdateMines().runTaskTimer(this,20, 20);
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
     }
@@ -71,8 +65,6 @@ public final class MinePlugin extends JavaPlugin
     {
         config = new Yml(this, "config");
         config.setDefaultsFromJar();
-        //config.setConfigSettings(ConfigSettings.PRESERVE_COMMENTS);
-        //config.addDefaultsFromInputStream(getClass().getResourceAsStream("/config.yml"));
         messageHandler = new MessageHandler(this);
     }
 
