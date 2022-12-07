@@ -182,6 +182,11 @@ public class Yml
         return config.getStringList(s);
     }
 
+    public float getFloat(String s)
+    {
+        return (float) getDouble(s);
+    }
+
     public Object get(String s)
     {
         return config.get(s);
@@ -220,6 +225,15 @@ public class Yml
     public String getName()
     {
         return file.getName();
+    }
+
+    public void rename(String newName) {
+        File newFile = new File(file.getParent() + "/" + newName + ".yml");
+        file.renameTo(newFile);
+    }
+
+    public void delete() {
+        file.delete();
     }
 
     public void setDefaultsFromJar()

@@ -1,8 +1,9 @@
 package com.yoreni.mineplugin;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import de.leonhard.storage.Yaml;
-import de.leonhard.storage.internal.settings.ConfigSettings;
+import com.yoreni.mineplugin.mine.Mine;
+import com.yoreni.mineplugin.mine.MineListener;
+import com.yoreni.mineplugin.util.Yml;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -11,16 +12,10 @@ import com.yoreni.mineplugin.util.MessageHandler;
 
 public final class MinePlugin extends JavaPlugin
 {
-    /**
-     * The file location where the data and config will be
-     */
-    public final String pluginFolder = "plugins/" + this.getName();
-
-    private static MinePlugin instance;
     public static WorldEditPlugin WORLD_EDIT = null;
+    private static MinePlugin instance;
     private static MessageHandler messageHandler;
-
-    Yaml config;
+    private static Yml config;
 
     @Override
     public void onEnable()
@@ -33,8 +28,8 @@ public final class MinePlugin extends JavaPlugin
         Mine.initMineList();
         Bukkit.getLogger().info(String.format("Loaded %d mine(s)", Mine.getMines().size()));
 
-        //this resets the mines if they are secldued to reset every x mins
         BukkitTask updateMines = new UpdateMines().runTaskTimer(this,20, 20);
+        Bukkit.getPluginManager().registerEvents(new MineListener(), this);
     }
 
 
@@ -56,6 +51,10 @@ public final class MinePlugin extends JavaPlugin
         return messageHandler;
     }
 
+    public static Yml getConfigFile() {
+        return config;
+    }
+
     private void registerCommands()
     {
         this.getCommand("mines").setExecutor(new MineCommands(this));
@@ -64,9 +63,8 @@ public final class MinePlugin extends JavaPlugin
 
     private void setupConfigFiles()
     {
-        config = new Yaml("config", pluginFolder);
-        config.setConfigSettings(ConfigSettings.PRESERVE_COMMENTS);
-        config.addDefaultsFromInputStream(getClass().getResourceAsStream("/config.yml"));
+        config = new Yml(this, "config");
+        config.setDefaultsFromJar();
         messageHandler = new MessageHandler(this);
     }
 

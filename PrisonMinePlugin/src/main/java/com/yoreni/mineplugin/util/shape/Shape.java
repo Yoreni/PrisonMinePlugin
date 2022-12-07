@@ -1,8 +1,10 @@
 package com.yoreni.mineplugin.util.shape;
 
-import de.leonhard.storage.Yaml;
-import org.bukkit.Location;
+import com.yoreni.mineplugin.util.Yml;
+
+import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.Location;
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public abstract class Shape
      * @param file the file you want to save it to
      * @param path the path of the file
      */
-    public abstract void writeToYaml(Yaml file, String path);
+    public abstract void writeToYaml(Yml file, String path);
 
     /**
      * gets the name of the shape
@@ -55,14 +57,14 @@ public abstract class Shape
      * @param path
      * @return
      */
-    public static Shape readFromYaml(Yaml file, String path)
+    public static Shape readFromYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
-        if(file.get("shape").equals("cuboid"))
+        //file.setPathPrefix(path);
+        if(file.get(path + ".shape").equals("cuboid"))
         {
             return Cuboid.readFromYaml(file, path);
         }
-        else if(file.get("shape").equals("cylinder"))
+        else if(file.get(path + ".shape").equals("cylinder"))
         {
             return Cylinder.readFromYaml(file, path);
         }

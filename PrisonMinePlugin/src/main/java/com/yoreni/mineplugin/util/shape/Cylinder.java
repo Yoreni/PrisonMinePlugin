@@ -1,6 +1,6 @@
 package com.yoreni.mineplugin.util.shape;
 
-import de.leonhard.storage.Yaml;
+import com.yoreni.mineplugin.util.Yml;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -112,19 +112,19 @@ public class Cylinder extends Shape
     }
 
     @Override
-    public void writeToYaml(Yaml file, String path)
+    public void writeToYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
+        //file.setPathPrefix(path);
 
-        file.set("shape", "cylinder");
-        file.set("world", getWorld().getName());
-        file.set("xRadius", xRadius);
-        file.set("zRadius", zRadius);
-        file.set("height", height);
+        file.set(path + ".shape", "cylinder");
+        file.set(path + ".world", getWorld().getName());
+        file.set(path + ".xRadius", xRadius);
+        file.set(path + ".zRadius", zRadius);
+        file.set(path + ".height", height);
 
-        file.set("center.x", center.getX());
-        file.set("center.y", center.getY());
-        file.set("center.z", center.getZ());
+        file.set(path + ".center.x", center.getX());
+        file.set(path + ".center.y", center.getY());
+        file.set(path + ".center.z", center.getZ());
     }
 
     @Override
@@ -229,24 +229,28 @@ public class Cylinder extends Shape
         return volume;
     }
 
-    public static Shape readFromYaml(Yaml file, String path)
+    public static Shape readFromYaml(Yml file, String path)
     {
-        file.setPathPrefix(path);
-
-        if(!file.getString("shape").equals("cylinder"))
+        //file.setPathPrefix(path);
+        if(!file.getString(path + ".shape").equals("cylinder"))
         {
             return null;
         }
 
-        World world = Bukkit.getWorld(file.getString("world"));
+        World world = Bukkit.getWorld(file.getString(path + ".world"));
+        if(world == null)
+        {
+            final String worldName = file.getString(path + ".world");
+            throw new NullPointerException(String.format("The world (%s) defined in %s doesnt exist."
+                    , worldName, file.getName()));
+        }
 
         Location center = new Location(world,
-                file.getDouble("center.x"), file.getDouble("center.y"),
-                file.getDouble("center.z"));
-        double xRadius = file.getDouble("xRadius");
-        double zRadius = file.getDouble("zRadius");
-        int height = file.getInt("height");
-
+                file.getDouble(path + ".center.x"), file.getDouble(path + ".center.y"),
+                file.getDouble(path + ".center.z"));
+        double xRadius = file.getDouble(path + ".xRadius");
+        double zRadius = file.getDouble(path + ".zRadius");
+        int height = file.getInt(path + ".height");
 
         return new Cylinder(center,xRadius, zRadius, height);
     }

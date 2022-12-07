@@ -1,8 +1,26 @@
 1α
   - first version
 1.1α
-  - fixed -0% bug
+  - fixed "-0%" bug
   - add it so you can remove every block from a mine
 1.2α - 10/9/2021
   - fixing an error if a file mentions a world that doesnt exist causing the plugin to break. if Multiverse-Core is
     enabled the plugins loads before the multiverse core worlds.
+2α - 12/9/2021
+  - removing the Simplex Storage dependency cos it made the plugin file size too big. it seems better to code my own how
+    some methods will get inspiration from Simplex Storage (576MB -> 44MB)
+  - updated plugin to 1.17.1
+3α - 2/1/2022
+  - added /mines rename so you can rename mines
+4α - 3/1/2022
+  - added the ablity to delete mines with /mines delete
+5α - 5/1/2022
+  - moved the mine composition class to its own file
+  - the mines now know much of them have been mined
+  - the mines can automatically reset if a specified % of the mine has been mined
+5.1α - 6/1/2022
+  - added /mines rename and /mines delete to the help menu
+
+TODO
+ - add spigot support
+ - update to 1.18
