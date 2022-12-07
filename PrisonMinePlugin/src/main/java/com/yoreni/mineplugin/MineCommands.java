@@ -40,12 +40,11 @@ public class MineCommands implements CommandExecutor, TabCompleter
         {
             try
             {
-
                 if(args.length == 0)
                 {
                     showHelpMenu(sender);
                 }
-
+//TODO fix the indentation
             else if(args[0].equalsIgnoreCase("create"))
             {
                handleCreateSubcommand(sender, args);
