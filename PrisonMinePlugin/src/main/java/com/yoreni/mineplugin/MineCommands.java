@@ -26,7 +26,7 @@ import java.util.*;
 
 public class MineCommands implements CommandExecutor, TabCompleter
 {
-    MinePlugin main = null;
+    MinePlugin main;
 
     public MineCommands(MinePlugin main)
     {
@@ -44,155 +44,65 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 {
                     showHelpMenu(sender);
                 }
-//TODO fix the indentation
-            else if(args[0].equalsIgnoreCase("create"))
-            {
-               handleCreateSubcommand(sender, args);
-               return true;
-            }
-            else if(args[0].equalsIgnoreCase("add"))
-            {
-                handleAddSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("remove"))
-            {
-                handleRemoveSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("reset"))
-            {
-                handleResetSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("resize"))
-            {
-                handleResizeSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("info"))
-            {
-                handleInfoSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("list"))
-            {
-                handleListSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("rename"))
-            {
-                handleRenameSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("delete"))
-            {
-                handleDeleteSubcommand(sender, args);
-                return true;
-            }
-            else if(args[0].equalsIgnoreCase("help"))
-            {
-                showHelpMenu(sender);
-            }
-            else if(args[0].equalsIgnoreCase("settings"))
-            {
-                if(!sender.hasPermission("prisonmines.admin.settings"))
+                else if(args[0].equalsIgnoreCase("create"))
                 {
-                    MinePlugin.getMessageHandler().sendMessage(sender, "no-perms");
+                    handleCreateSubcommand(sender, args);
                     return true;
                 }
-
-                if (args[2].equalsIgnoreCase("auto"))
+                else if(args[0].equalsIgnoreCase("add"))
                 {
-                    if (args[3].equalsIgnoreCase("timed"))
-                    {
-                        if(args.length < 5)
-                        {
-                            sender.sendMessage("Usage /mines settings <name> autoReset timed <minutes>");
-                            return true;
-                        }
-
-                        Mine mine = validateMine(args[1], sender);
-
-                        int resetInterval = Integer.parseInt(args[4]);
-                        mine.setResetInterval(resetInterval);
-
-                        if(resetInterval > 0)
-                        {
-                            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-change-success",
-                                    new Placeholder("%mine%", args[1]),
-                                    new Placeholder("%time%", String.valueOf(resetInterval)));
-                        }
-                        else
-                        {
-                            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
-                                    new Placeholder("%mine%", args[1]));
-                        }
-                    }
-                    else if (args[3].equalsIgnoreCase("percent"))
-                    {
-                        if(args.length < 5)
-                        {
-                            sender.sendMessage("Usage /mines settings <name> autoReset percent <percent>");
-                            return true;
-                        }
-
-                        Mine mine = validateMine(args[1], sender);
-
-                        int resetPercentage = Integer.parseInt(args[4]);
-
-                        if(resetPercentage >= 0 && resetPercentage < 100)
-                        {
-                            mine.setResetPercentage(resetPercentage);
-                            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-percent-change-success",
-                                    new Placeholder("%mine%", args[1]),
-                                    new Placeholder("%percent%", Util.doubleToPercent(resetPercentage / 100D, 0)));
-                        }
-                        else
-                        {
-                            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-percent-invalid-number");
-                        }
-                     }
-                      else if (args[3].equalsIgnoreCase("disable"))
-                     {
-                         Mine mine = validateMine(args[1], sender);
-
-                         mine.disableAutoReset();
-                         MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
-                                 new Placeholder("%mine%", args[1]));
-                     }
-                  }
-                 else if (args[2].equalsIgnoreCase("teleportLocation"))
-                 {
-                        if(!(sender instanceof Player))
-                        {
-                            MinePlugin.getMessageHandler().sendMessage(sender, "command-only-for-players");
-                            return true;
-                        }
-
-                        Mine mine = validateMine(args[1], sender);
-
-                        Player player = (Player) sender;
-                        Location loc = player.getLocation();
-
-                        World world = loc.getWorld();
-                        int x = loc.getBlockX();
-                        int y = loc.getBlockY();
-                        int z = loc.getBlockZ();
-                        Location teleportPosition = new Location(world, x, y, z, loc.getYaw(), loc.getPitch());
-
-                        mine.setTeleportPosition(teleportPosition);
-                        MinePlugin.getMessageHandler().sendMessage(sender, "mine-tp-location-change-success",
-                                new Placeholder("%mine%", args[1]),
-                                new Placeholder("%x%", String.valueOf(x)),
-                                new Placeholder("%y%", String.valueOf(y)),
-                                new Placeholder("%z%", String.valueOf(z)),
-                                new Placeholder("%world%", world.getName()));
-                    }
+                    handleAddSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("remove"))
+                {
+                    handleRemoveSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("reset"))
+                {
+                    handleResetSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("resize"))
+                {
+                    handleResizeSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("info"))
+                {
+                    handleInfoSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("list"))
+                {
+                    handleListSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("rename"))
+                {
+                    handleRenameSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("delete"))
+                {
+                    handleDeleteSubcommand(sender, args);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("help"))
+                {
+                    showHelpMenu(sender);
+                    return true;
+                }
+                else if(args[0].equalsIgnoreCase("settings"))
+                {
+                    handleSettingsSubcommand(sender, args);
+                    return true;
                 }
                 else
                 {
                     showHelpMenu(sender);
+                    return true;
                 }
             }
             catch(InputMismatchException exception)
@@ -212,7 +122,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             return null;
         }
 
-        List<String> showOnTabComplete = new ArrayList<String>();
+        List<String> showOnTabComplete = new ArrayList<>();
 
         if (args.length == 1)
         {
@@ -308,7 +218,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = createShape(region, args.length < 3 ? "cuboid" : args[2]);;
+        Shape shape = createShape(region, args.length < 3 ? "cuboid" : args[2]);
 
         if(Mine.get(args[1]) != null)
         {
@@ -345,6 +255,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         Material block = Material.matchMaterial(args[2]);
         double percent = Double.parseDouble(args[3]) / 100;
+        //TODO: handle invadlid materials
         mine.getCompostion().addBlock(block, percent);
 
         MinePlugin.getMessageHandler().sendMessage(sender, "block-add-success",
@@ -384,6 +295,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("invalid-block");
         }
 
+        //TODO: handle invadlid materials
         Material block = Material.matchMaterial(args[2]);
         if(mine.getCompostion().hasBlock(block))
         {
@@ -429,7 +341,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         Mine mine = validateMine(args[1], sender);
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = createShape(region, args.length < 3 ? mine.getShape().getName() : args[2]);;
+        Shape shape = createShape(region, args.length < 3 ? mine.getShape().getName() : args[2]);
 
         mine.setShape(shape);
         sender.sendMessage("Mine " + args[1] + " resized.");
@@ -527,9 +439,8 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         for(TextComponent component : infoLines)
         {
-            if(sender instanceof Player)
+            if(sender instanceof Player player)
             {
-                Player player = (Player) sender;
                 player.spigot().sendMessage(component);
             }
             else
@@ -598,6 +509,101 @@ public class MineCommands implements CommandExecutor, TabCompleter
             MinePlugin.getMessageHandler().sendMessage(sender, "mine-delete-prompt",
                     new Placeholder("%mine%", mine.getName()));
         }
+    }
+
+    private void handleSettingsSubcommand(CommandSender sender, String[] args)
+    {
+        if(!sender.hasPermission("prisonmines.admin.settings"))
+        {
+            throw new InputMismatchException("no-perms");
+        }
+
+        if (args[2].equalsIgnoreCase("auto"))
+        {
+            handleAutoResetSetting(sender, args);
+        }
+        else if (args[2].equalsIgnoreCase("teleportLocation"))
+        {
+            handleTpLocSetting(sender, args);
+        }
+    }
+
+    private void handleAutoResetSetting(CommandSender sender, String[] args)
+    {
+        Mine mine = validateMine(args[1], sender);
+
+        if (args[3].equalsIgnoreCase("timed"))
+        {
+            if(args.length < 5)
+            {
+                throw new InputMismatchException("Usage /mines settings <name> autoReset timed <minutes>");
+            }
+
+            int resetInterval = Integer.parseInt(args[4]);
+            mine.setResetInterval(resetInterval);
+
+            if(resetInterval > 0)
+            {
+                MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-change-success",
+                        new Placeholder("%mine%", args[1]),
+                        new Placeholder("%time%", String.valueOf(resetInterval)));
+                return;
+            }
+
+            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
+                    new Placeholder("%mine%", args[1]));
+        }
+        else if (args[3].equalsIgnoreCase("percent"))
+        {
+            if(args.length < 5)
+            {
+                throw new InputMismatchException("Usage /mines settings <name> autoReset percent <percent>");
+            }
+
+            int resetPercentage = Integer.parseInt(args[4]);
+
+            if(resetPercentage < 0 || resetPercentage >= 100)
+            {
+                throw new InputMismatchException("mine-reset-percent-invalid-number");
+            }
+
+            mine.setResetPercentage(resetPercentage);
+            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-percent-change-success",
+                    new Placeholder("%mine%", args[1]),
+                    new Placeholder("%percent%", Util.doubleToPercent(resetPercentage / 100D, 0)));
+        }
+        else if (args[3].equalsIgnoreCase("disable"))
+        {
+            mine.disableAutoReset();
+            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
+                    new Placeholder("%mine%", args[1]));
+        }
+    }
+
+    private void handleTpLocSetting(CommandSender sender, String[] args)
+    {
+        if(!(sender instanceof Player player))
+        {
+            throw new InputMismatchException("command-only-for-players");
+        }
+
+        Mine mine = validateMine(args[1], sender);
+
+        Location loc = player.getLocation();
+
+        World world = loc.getWorld();
+        int x = loc.getBlockX();
+        int y = loc.getBlockY();
+        int z = loc.getBlockZ();
+        Location teleportPosition = new Location(world, x, y, z, loc.getYaw(), loc.getPitch());
+
+        mine.setTeleportPosition(teleportPosition);
+        MinePlugin.getMessageHandler().sendMessage(sender, "mine-tp-location-change-success",
+                new Placeholder("%mine%", args[1]),
+                new Placeholder("%x%", String.valueOf(x)),
+                new Placeholder("%y%", String.valueOf(y)),
+                new Placeholder("%z%", String.valueOf(z)),
+                new Placeholder("%world%", world.getName()));
     }
 
     private Mine validateMine(String mineName, CommandSender sender)
