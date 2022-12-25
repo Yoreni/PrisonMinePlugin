@@ -6,6 +6,7 @@ import com.yoreni.mineplugin.util.*;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
 import com.yoreni.mineplugin.util.shape.Shape;
+import com.yoreni.mineplugin.util.shape.ShapeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
@@ -159,8 +160,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else if(args[0].equalsIgnoreCase("create") || args[0].equalsIgnoreCase("resize"))
             {
-                String[] shapes = {"cuboid", "cylinder"};
-                StringUtil.copyPartialMatches(args[2], Arrays.asList(shapes), showOnTabComplete);
+                StringUtil.copyPartialMatches(args[2], ShapeManager.getShapeNames(), showOnTabComplete);
                 return showOnTabComplete;
             }
             else if(args[0].equalsIgnoreCase("remove"))
