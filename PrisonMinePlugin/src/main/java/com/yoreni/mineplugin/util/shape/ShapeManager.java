@@ -71,7 +71,7 @@ public class ShapeManager
         }
     }
 
-    private static Class getShapeClass(String shapeName)
+    public static Class getShapeClass(String shapeName)
     {
         try
         {

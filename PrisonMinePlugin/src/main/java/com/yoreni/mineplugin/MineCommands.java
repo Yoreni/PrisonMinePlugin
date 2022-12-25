@@ -23,6 +23,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class MineCommands implements CommandExecutor, TabCompleter
@@ -214,11 +215,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         if(args.length < 2)
         {
-            throw new InputMismatchException("usage /mines create <name>");
+            throw new InputMismatchException("usage /mines create <name> (shape)");
         }
 
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = createShape(region, args.length < 3 ? "cuboid" : args[2]);
+        Shape shape = createShape(region, args.length < 3 ? "cuboid" : args[2],
+                Arrays.copyOfRange(args, 3, args.length));
 
         if(Mine.get(args[1]) != null)
         {
@@ -245,17 +247,9 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("usage /mines add <name> <block> <percent>");
         }
 
-        //getting and validating the mine
-        Mine mine = validateMine(args[1], sender);
-
-        if(!Util.getListOfBlocks().contains(args[2]))
-        {
-            throw new InputMismatchException("invalid-block");
-        }
-
-        Material block = Material.matchMaterial(args[2]);
+        Mine mine = validateMine(args[1]);
+        Material block = validateMaterial(args[2]);
         double percent = Double.parseDouble(args[3]) / 100;
-        //TODO: handle invadlid materials
         mine.getCompostion().addBlock(block, percent);
 
         MinePlugin.getMessageHandler().sendMessage(sender, "block-add-success",
@@ -278,7 +272,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         //getting and validating the mine
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         //if its star we will remove every block
         if(args[2].equals("*"))
@@ -290,13 +284,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         // otherwise we will try to remove the block specified
-        if (!Util.getListOfBlocks().contains(args[2]))
-        {
-            throw new InputMismatchException("invalid-block");
-        }
-
-        //TODO: handle invadlid materials
-        Material block = Material.matchMaterial(args[2]);
+        Material block = validateMaterial(args[2]);
         if(mine.getCompostion().hasBlock(block))
         {
             mine.getCompostion().removeBlock(block);
@@ -320,7 +308,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         //getting and validating the mine
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         mine.reset();
         MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-success",
@@ -336,12 +324,13 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         if(args.length < 2)
         {
-            throw new InputMismatchException("usage /mines resize <name>");
+            throw new InputMismatchException("usage /mines resize <name> (shape)");
         }
 
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = createShape(region, args.length < 3 ? mine.getShape().getName() : args[2]);
+        Shape shape = createShape(region, args.length < 3 ? mine.getShape().getName() : args[2],
+                Arrays.copyOfRange(args, 3, args.length));
 
         mine.setShape(shape);
         sender.sendMessage("Mine " + args[1] + " resized.");
@@ -359,7 +348,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("usage /mines info <name>");
         }
 
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         MessageHandler messageHandler = MinePlugin.getMessageHandler();
         ArrayList<String> infoLines = new ArrayList<String>();
@@ -462,7 +451,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("usage /mines rename <mine> <new name>");
         }
 
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         String newName = args[2];
         if(Mine.get(newName) != null)
@@ -494,7 +483,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("usage /mines delete <mine>");
         }
 
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         if(args.length >= 3 && args[2].equals("confirm"))
         {
@@ -530,7 +519,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
     private void handleAutoResetSetting(CommandSender sender, String[] args)
     {
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         if (args[3].equalsIgnoreCase("timed"))
         {
@@ -587,7 +576,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("command-only-for-players");
         }
 
-        Mine mine = validateMine(args[1], sender);
+        Mine mine = validateMine(args[1]);
 
         Location loc = player.getLocation();
 
@@ -606,7 +595,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 new Placeholder("%world%", world.getName()));
     }
 
-    private Mine validateMine(String mineName, CommandSender sender)
+    private Mine validateMine(String mineName)
     {
         Mine mine = Mine.get(mineName);
         if(mine == null)
@@ -617,6 +606,16 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         return mine;
+    }
+
+    private Material validateMaterial(String material)
+    {
+        if(!Util.getListOfBlocks().contains(material))
+        {
+            throw new InputMismatchException("invalid-block");
+        }
+
+        return Material.matchMaterial(material);
     }
 
     private WorldEditRegion getWERegion(Player player)
@@ -630,19 +629,23 @@ public class MineCommands implements CommandExecutor, TabCompleter
         return region;
     }
 
-    private Shape createShape(WorldEditRegion region, String type)
+    private Shape createShape(WorldEditRegion region, String type, String... args)
     {
-        if(type.equalsIgnoreCase("cuboid"))
+        try
         {
-            return new Cuboid(region.getPos1(), region.getPos2());
+            Class clas = ShapeManager.getShapeClass(type);
+            if (clas == null)
+            {
+                throw new InputMismatchException("invalid-shape");
+            }
+
+            return (Shape) clas.getConstructor(Location.class, Location.class, String[].class)
+                    .newInstance(region.getPos1(), region.getPos2(), args);
         }
-        else if(type.equalsIgnoreCase("cylinder"))
+        catch (Exception exception)
         {
-            return new Cylinder(region.getPos1(), region.getPos2());
-        }
-        else
-        {
-            throw new InputMismatchException("invalid-shape");
+            exception.printStackTrace();
+            throw new InputMismatchException(exception.getMessage());
         }
     }
 }

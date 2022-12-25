@@ -44,6 +44,11 @@ public class Cylinder extends Shape
         this.height = height;
     }
 
+    public Cylinder(Location pos1, Location pos2, String... args)
+    {
+        this(pos1, pos2);
+    }
+
     @Override
     public List<Location> getBlocks()
     {

@@ -81,8 +81,6 @@ public class Yml
             try
             {
                 file.createNewFile();
-                //InputStream stream =  getClass().getResourceAsStream("/" + name +".yml");
-                //copyFile(stream,file);
             }
             catch (Exception Exception)
             {

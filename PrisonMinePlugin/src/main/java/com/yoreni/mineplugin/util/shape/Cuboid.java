@@ -43,6 +43,11 @@ public class Cuboid extends Shape
         this(new Location(world, x1, y1, z1), new Location(world,x2,y2,z2));
     }
 
+    public Cuboid(Location pos1, Location pos2, String... args)
+    {
+        this(pos1, pos2);
+    }
+
     public static String getName()
     {
         return "cuboid";
