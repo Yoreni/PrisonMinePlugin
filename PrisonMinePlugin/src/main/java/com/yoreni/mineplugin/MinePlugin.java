@@ -4,6 +4,9 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import com.yoreni.mineplugin.mine.Mine;
 import com.yoreni.mineplugin.mine.MineListener;
 import com.yoreni.mineplugin.util.Yml;
+import com.yoreni.mineplugin.util.shape.Cuboid;
+import com.yoreni.mineplugin.util.shape.Cylinder;
+import com.yoreni.mineplugin.util.shape.ShapeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -25,6 +28,8 @@ public final class MinePlugin extends JavaPlugin
         setupWorldEdit();
         setupConfigFiles();
 
+        ShapeManager.registerShape(Cuboid.class);
+        ShapeManager.registerShape(Cylinder.class);
         Mine.initMineList();
         Bukkit.getLogger().info(String.format("Loaded %d mine(s)", Mine.getMines().size()));
 

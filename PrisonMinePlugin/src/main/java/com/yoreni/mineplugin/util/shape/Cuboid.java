@@ -43,6 +43,11 @@ public class Cuboid extends Shape
         this(new Location(world, x1, y1, z1), new Location(world,x2,y2,z2));
     }
 
+    public static String getName()
+    {
+        return "cuboid";
+    }
+
     @Override
     public List<Location> getBlocks()
     {
@@ -84,11 +89,6 @@ public class Cuboid extends Shape
     }
 
     @Override
-    public String getName() {
-        return "cuboid";
-    }
-
-    @Override
     public boolean isInside(Location loc)
     {
        if(!loc.getWorld().equals(getWorld()))
@@ -121,8 +121,6 @@ public class Cuboid extends Shape
 
     public static Shape readFromYaml(Yml file, String path)
     {
-        //file.setPathPrefix(path);
-
         if(!file.getString(path + ".shape").equals("cuboid"))
         {
             return null;

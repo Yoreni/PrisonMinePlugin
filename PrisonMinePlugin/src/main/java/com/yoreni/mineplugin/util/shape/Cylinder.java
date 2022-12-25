@@ -127,8 +127,8 @@ public class Cylinder extends Shape
         file.set(path + ".center.z", center.getZ());
     }
 
-    @Override
-    public String getName() {
+    public static String getName()
+    {
         return "cylinder";
     }
 
@@ -231,7 +231,6 @@ public class Cylinder extends Shape
 
     public static Shape readFromYaml(Yml file, String path)
     {
-        //file.setPathPrefix(path);
         if(!file.getString(path + ".shape").equals("cylinder"))
         {
             return null;

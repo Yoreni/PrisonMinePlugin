@@ -5,6 +5,7 @@ import com.yoreni.mineplugin.util.Yml;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
 import com.yoreni.mineplugin.util.shape.Shape;
+import com.yoreni.mineplugin.util.shape.ShapeManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -329,7 +330,7 @@ public class Mine
     {
         String name = file.getString("name");
 
-        Shape shape = Shape.readFromYaml(file, "shape");
+        Shape shape = ShapeManager.readFromYaml(file, "shape");
         Mine mine = new Mine(shape, name);
         mine.compostion = MineComposition.readFromYaml(file, "blocks");
         mine.resetCondition = MineResetCondition.valueOf(file.getOrDefault("settings.resetCondition", "NONE"));
