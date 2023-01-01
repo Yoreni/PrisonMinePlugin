@@ -3,8 +3,6 @@ package com.yoreni.mineplugin;
 import com.yoreni.mineplugin.mine.Mine;
 import com.yoreni.mineplugin.mine.MineResetCondition;
 import com.yoreni.mineplugin.util.*;
-import com.yoreni.mineplugin.util.shape.Cuboid;
-import com.yoreni.mineplugin.util.shape.Cylinder;
 import com.yoreni.mineplugin.util.shape.Shape;
 import com.yoreni.mineplugin.util.shape.ShapeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -22,9 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import scala.concurrent.impl.FutureConvertersImpl;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class MineCommands implements CommandExecutor, TabCompleter
@@ -368,7 +364,6 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         if(mine.getResetCondition() == MineResetCondition.TIMED_INTERVAL)
         {
-            Util.debug( mine.getTimeUntillNextReset() + "");
             String text = messageHandler.get("mine-info.reset-info-time",
                     new Placeholder("%interval%", mine.getResetInterval() + ""),
                     new Placeholder("%timeleft%", Util.formatTime(mine.getTimeUntillNextReset())));

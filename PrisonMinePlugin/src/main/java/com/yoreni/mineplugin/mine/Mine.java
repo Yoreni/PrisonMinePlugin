@@ -55,8 +55,8 @@ public class Mine
 
     /**
      * gets an instance of an already existing mine based on its name
-     * @param name
-     * @return
+     * @param name the name of that mine
+     * @return the instance of that mine if it exists
      */
     public static Mine get(String name)
     {
@@ -73,8 +73,7 @@ public class Mine
     }
 
     /**
-     * gets a list of all mines
-     * @return
+     * @return list of all mines
      */
     public static List<Mine> getMines()
     {
@@ -155,7 +154,7 @@ public class Mine
             public void run()
             {
                 //these calculate which section of the blocks list we will set in the world.
-                int startIndex = tick * BLOCKS_PER_TICK;           //  (end of the list)
+                int startIndex = tick * BLOCKS_PER_TICK;
                 int endIndex = Math.min(((tick + 1) * BLOCKS_PER_TICK), blocks.size());
 
                 for (Location location : blocks.subList(startIndex, endIndex))
@@ -206,7 +205,7 @@ public class Mine
     }
 
     /**
-     * @return
+     * @return the amount of the mine that needs to be mined for it to be reset
      */
     public double getResetPercentage()
     {
@@ -225,7 +224,7 @@ public class Mine
             case TIMED_INTERVAL:
                 return getTimeUntillNextReset() < 0;
             case PERCENT_EMPTY:
-                return 1 - getPercentMined() < (resetValue / 100D);
+                return 1 - getPercentMined() < getResetPercentage();
         }
 
         return false;
@@ -290,20 +289,17 @@ public class Mine
         }
         else
         {
-            if(shape instanceof Cuboid)
+            //TODO change this. maybe add a getDefaultTpLocation to the shape and call that
+            if(shape instanceof Cuboid cuboid)
             {
-                Cuboid cuboid = (Cuboid) shape;
-
                 int x = (cuboid.getPos1().getBlockX() + cuboid.getPos2().getBlockX()) / 2;
                 int y = cuboid.getPos2().getBlockY() + 1;
                 int z = (cuboid.getPos1().getBlockZ() + cuboid.getPos2().getBlockZ()) / 2;
 
                 return new Location(cuboid.getWorld(), x, y, z);
             }
-            else if(shape instanceof Cylinder)
+            else if(shape instanceof Cylinder cylinder)
             {
-                Cylinder cylinder = (Cylinder) shape;
-
                 int y = cylinder.getCenter().getBlockY() + cylinder.getHeight() + 1;
 
                 return new Location(cylinder.getWorld()
