@@ -3,6 +3,7 @@ package com.yoreni.mineplugin.util;
 import com.yoreni.mineplugin.MinePlugin;
 import net.md_5.bungee.chat.TranslationRegistry;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 
 import java.text.DecimalFormat;
@@ -10,10 +11,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 public class Util
 {
+    private static final boolean DEBUG = true;
     private static List<String> listOfBlocksNames = new ArrayList<String>();
+
+    public static void debug(String string)
+    {
+        if (DEBUG)
+        {
+            Bukkit.getLogger().info(string);
+        }
+    }
 
     public static List<String> getListOfBlocks()
     {
@@ -67,28 +76,47 @@ public class Util
         return name;
     }
 
-    public static String formatTime(long milliseconds) //TODO make this localisesable
+    public static String formatTime(long milliseconds)
     {
         int s = (int) (milliseconds / 1_000) % 60;
         int m = (int) (milliseconds / 60_000) % 60;
         int h = (int) (milliseconds / 3_600_000) % 24;
         int d = (int) (milliseconds / 86_400_000);
 
+        Placeholder[] placeholders = {
+                new Placeholder("%s%", s + ""),
+                new Placeholder("%ss%", StringUtils.leftPad(s + "", 2, '0')),
+                new Placeholder("%m%", m + ""),
+                new Placeholder("%mm%", StringUtils.leftPad(m + "", 2,'0')),
+                new Placeholder("%h%", h + ""),
+                new Placeholder("%hh%", StringUtils.leftPad(h + "", 2, '0')),
+                new Placeholder("%d%", d + ""),
+                new Placeholder("%dd%", StringUtils.leftPad(d + "", 2, '0'))
+        };
+
         if(milliseconds < 60_000)
         {
-            return s + "s";
+            return MinePlugin.getMessageHandler().get("number.time.seconds",
+                    Arrays.copyOfRange(placeholders, 0, 2)
+            );
         }
         else if(milliseconds < 3_600_000)
         {
-            return m + "m " + s + "s";
+            return MinePlugin.getMessageHandler().get("number.time.minutes",
+                    Arrays.copyOfRange(placeholders, 0, 4)
+            );
         }
         else if(milliseconds < 86_400_000)
         {
-            return h + "h " + m + "m";
+            return MinePlugin.getMessageHandler().get("number.time.hours",
+                    Arrays.copyOfRange(placeholders, 0, 6)
+            );
         }
         else
         {
-            return d + "d " + h + "h";
+            return MinePlugin.getMessageHandler().get("number.time.days",
+                    placeholders
+            );
         }
     }
 

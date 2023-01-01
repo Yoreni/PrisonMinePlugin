@@ -48,9 +48,14 @@ public class Cuboid extends Shape
         this(pos1, pos2);
     }
 
-    public static String getName()
+    public static String getSName()
     {
         return "cuboid";
+    }
+
+    public String getName()
+    {
+        return getSName();
     }
 
     @Override

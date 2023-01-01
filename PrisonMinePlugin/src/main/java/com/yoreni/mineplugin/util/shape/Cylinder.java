@@ -132,9 +132,14 @@ public class Cylinder extends Shape
         file.set(path + ".center.z", center.getZ());
     }
 
-    public static String getName()
+    public static String getSName()
     {
         return "cylinder";
+    }
+
+    public String getName()
+    {
+        return getSName();
     }
 
     @Override

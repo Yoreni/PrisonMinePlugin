@@ -219,8 +219,8 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = createShape(region, args.length < 3 ? "cuboid" : args[2],
-                Arrays.copyOfRange(args, 3, args.length));
+        Shape shape = args.length < 3 ? createShape(region,"cuboid", null) :
+                                        createShape(region, args[2], Arrays.copyOfRange(args, 3, args.length));
 
         if(Mine.get(args[1]) != null)
         {
@@ -329,8 +329,8 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         Mine mine = validateMine(args[1]);
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = createShape(region, args.length < 3 ? mine.getShape().getName() : args[2],
-                Arrays.copyOfRange(args, 3, args.length));
+        Shape shape = args.length < 3 ? createShape(region,mine.getShape().getName(), null) :
+                createShape(region, args[2], Arrays.copyOfRange(args, 3, args.length));
 
         mine.setShape(shape);
         sender.sendMessage("Mine " + args[1] + " resized.");
@@ -366,6 +366,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         if(mine.getResetCondition() == MineResetCondition.TIMED_INTERVAL)
         {
+            Util.debug( mine.getTimeUntillNextReset() + "");
             String text = messageHandler.get("mine-info.reset-info-time",
                     new Placeholder("%interval%", mine.getResetInterval() + ""),
                     new Placeholder("%timeleft%", Util.formatTime(mine.getTimeUntillNextReset())));
@@ -507,7 +508,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("no-perms");
         }
 
-        if (args[2].equalsIgnoreCase("auto"))
+        if (args[2].equalsIgnoreCase("autoReset"))
         {
             handleAutoResetSetting(sender, args);
         }

@@ -1,6 +1,7 @@
 package com.yoreni.mineplugin.mine;
 
 import com.yoreni.mineplugin.MinePlugin;
+import com.yoreni.mineplugin.util.Util;
 import com.yoreni.mineplugin.util.Yml;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
@@ -183,7 +184,7 @@ public class Mine
      */
     public long getTimeUntillNextReset()
     {
-        if(resetValue <= 0 || resetCondition != MineResetCondition.NONE)
+        if(resetValue <= 0 || resetCondition != MineResetCondition.TIMED_INTERVAL)
         {
             return Long.MAX_VALUE;
         }
@@ -201,11 +202,7 @@ public class Mine
 
     public int getResetInterval()
     {
-        if(resetCondition == MineResetCondition.TIMED_INTERVAL) {
-            return resetValue;
-        } else {
-            return 0;
-        }
+        return resetCondition == MineResetCondition.TIMED_INTERVAL ? resetValue : 0;
     }
 
     /**

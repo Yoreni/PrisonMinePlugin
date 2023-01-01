@@ -45,3 +45,8 @@ number:
   percent-format: "number%"
   thousand-separator: ","
   decimal-point: "."
+  time:
+    seconds: "%s%"
+    minutes: "%m%:%ss%"
+    hours: "%h%:%mm%:%ss%"
+    days: "%d%:%hh%:%mm%:%ss%"

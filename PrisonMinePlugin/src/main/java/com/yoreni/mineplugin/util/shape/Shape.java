@@ -9,11 +9,6 @@ import java.util.List;
 
 public abstract class Shape
 {
-    public static String getName()
-    {
-        return "undefined";
-    }
-
     /**
      * gets a list of all postions thats part of the shape
      *
@@ -46,4 +41,11 @@ public abstract class Shape
      * @return
      */
     public abstract  int getVolume();
+
+    /**
+     * I would also make a static version of this method
+     * and this method called the static version
+     * @return returns the name of the shape
+     */
+    public abstract String getName();
 }

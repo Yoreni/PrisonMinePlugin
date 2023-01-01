@@ -38,7 +38,6 @@ public class ShapeManager
         try
         {
             Class shapeClass = getShapeClass((String) file.get(path + ".shape"));
-            Bukkit.getLogger().info(getShapeName(shapeClass));
             Object shape = shapeClass.getMethod("readFromYaml", Yml.class, String.class)
                     .invoke(null, file, path);
             return (Shape) shape;
@@ -59,7 +58,7 @@ public class ShapeManager
 
             for (Class clas : shapes)
             {
-                out.add((String) clas.getMethod("getName").invoke(null));
+                out.add(getShapeName(clas));
             }
 
             return out;
@@ -77,7 +76,7 @@ public class ShapeManager
         {
             for (Class clas : shapes)
             {
-                if (clas.getMethod("getName").invoke(null).equals(shapeName))
+                if (getShapeName(clas).equals(shapeName))
                 {
                     return clas;
                 }
@@ -94,7 +93,7 @@ public class ShapeManager
     {
         try
         {
-            return (String) shape.getMethod("getName").invoke(null);
+            return (String) shape.getMethod("getSName").invoke(null);
         }
         catch (Exception exception)
         {
