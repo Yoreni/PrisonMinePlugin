@@ -11,6 +11,7 @@ block-remove-success: "%block% has been remove from %mine%. There is now %percen
 every-block-remove-success: "Everything has been removed from %mine%."
 mine-reset-success: "Mine %mine% has been reset."
 mine-rename-success: "Mine %oldname% has been renamed to %newname%"
+mine-resize-success: "Mine %mine% resized."
 mine-delete-prompt: "Are you sure you want to delete mine %mine%? Do '/mines delete %mine% confirm' to confirm this"
 mine-delete-success: "Mine %mine% has been deleted."
 mine-reset-interval-change-success: "%mine% will now reset every %time% minute(s)"

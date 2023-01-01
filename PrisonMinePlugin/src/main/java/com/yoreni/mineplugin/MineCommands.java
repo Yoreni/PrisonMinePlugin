@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.concurrent.impl.FutureConvertersImpl;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -333,7 +334,8 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 createShape(region, args[2], Arrays.copyOfRange(args, 3, args.length));
 
         mine.setShape(shape);
-        sender.sendMessage("Mine " + args[1] + " resized.");
+        MinePlugin.getMessageHandler().sendMessage(sender, "mine-resize-success",
+                new Placeholder("%mine%", mine.getName()));
     }
 
     private void handleInfoSubcommand(CommandSender sender, String[] args)
