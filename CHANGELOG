@@ -21,6 +21,14 @@
 5.1α - 6/1/2022
   - added /mines rename and /mines delete to the help menu
 
+6α - 1/1/2023
+  - updated plugin to 1.18.2 (i dont know if it still works on 1.17.1)
+  - refactored MineCommands class
+  - made it easier to add new shapes without changing the code
+  - made it so users can change the format of timeFormat in messages.yml
+
 TODO
  - add spigot support
- - update to 1.18
+
+ NOTES
+  - if the server is killed. there is a chance that the mines wont save
