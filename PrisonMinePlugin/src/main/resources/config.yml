@@ -1,3 +1,0 @@
-# This is how many blocks a tick the plugin will set at once when resetting the mines
-# The plugin has this feature for performace reasons
-mineResetBlocksPerTick: 500

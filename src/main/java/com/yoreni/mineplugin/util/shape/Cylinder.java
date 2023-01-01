@@ -44,6 +44,11 @@ public class Cylinder extends Shape
         this.height = height;
     }
 
+    public Cylinder(Location pos1, Location pos2, String... args)
+    {
+        this(pos1, pos2);
+    }
+
     @Override
     public List<Location> getBlocks()
     {
@@ -127,9 +132,14 @@ public class Cylinder extends Shape
         file.set(path + ".center.z", center.getZ());
     }
 
-    @Override
-    public String getName() {
+    public static String getSName()
+    {
         return "cylinder";
+    }
+
+    public String getName()
+    {
+        return getSName();
     }
 
     @Override
@@ -231,7 +241,6 @@ public class Cylinder extends Shape
 
     public static Shape readFromYaml(Yml file, String path)
     {
-        //file.setPathPrefix(path);
         if(!file.getString(path + ".shape").equals("cylinder"))
         {
             return null;

@@ -1,5 +1,5 @@
 /**
- *  easy to know a players world edit region with out having a buch of annoying meessy code
+ *  easy to know a players world edit region without having a bunch of annoying code
  */
 
 package com.yoreni.mineplugin.util;
@@ -19,8 +19,8 @@ import org.bukkit.util.Vector;
 
 public class WorldEditRegion
 {
-    Location pos1;
-    Location pos2;
+    private Location pos1;
+    private Location pos2;
 
     public WorldEditRegion(Player player)
     {
