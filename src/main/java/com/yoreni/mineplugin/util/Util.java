@@ -72,7 +72,7 @@ public class Util
      */
     public static String materialToEnglish(Material material)
     {
-        String name = TranslationRegistry.INSTANCE.translate(material.getTranslationKey());
+        String name = TranslationRegistry.INSTANCE.translate(material.translationKey());
         return name;
     }
 
