@@ -33,7 +33,7 @@ public final class MinePlugin extends JavaPlugin
         Mine.initMineList();
         Bukkit.getLogger().info(String.format("Loaded %d mine(s)", Mine.getMines().size()));
 
-        BukkitTask updateMines = new UpdateMines().runTaskTimer(this,20, 20);
+        new UpdateMines().runTaskTimer(this,20, 20);
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
     }
 

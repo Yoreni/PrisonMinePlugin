@@ -14,7 +14,7 @@ import java.util.List;
 public class Util
 {
     private static final boolean DEBUG = true;
-    private static List<String> listOfBlocksNames = new ArrayList<String>();
+    private static List<String> listOfBlocksNames = new ArrayList<>();
 
     public static void debug(String string)
     {
@@ -72,8 +72,7 @@ public class Util
      */
     public static String materialToEnglish(Material material)
     {
-        String name = TranslationRegistry.INSTANCE.translate(material.translationKey());
-        return name;
+        return TranslationRegistry.INSTANCE.translate(material.name());
     }
 
     public static String formatTime(long milliseconds)
@@ -161,7 +160,8 @@ public class Util
 
             //turning all the block materials into strings
             String[] blockNames = Arrays.stream(blocks)
-                    .map((block) -> block.getKey().asString().split(":")[1])
+                    //.map((block) -> block.getKey().asString().split(":")[1]) paper
+                    .map((block) -> block.getKey().getKey())
                     .toArray(String[]::new);
 
             listOfBlocksNames = Arrays.asList(blockNames);

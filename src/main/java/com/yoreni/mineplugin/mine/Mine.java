@@ -1,7 +1,6 @@
 package com.yoreni.mineplugin.mine;
 
 import com.yoreni.mineplugin.MinePlugin;
-import com.yoreni.mineplugin.util.Util;
 import com.yoreni.mineplugin.util.Yml;
 import com.yoreni.mineplugin.util.shape.Cuboid;
 import com.yoreni.mineplugin.util.shape.Cylinder;
@@ -20,7 +19,7 @@ import java.util.*;
 
 public class Mine
 {
-    private static List<Mine> mines = new ArrayList<Mine>();
+    private static List<Mine> mines = new ArrayList<>();
 
     protected int blocksBroken = 0;
     private String name;
@@ -85,7 +84,7 @@ public class Mine
      */
     public static void initMineList()
     {
-        List<Mine> mines = new ArrayList<Mine>();
+        List<Mine> mines = new ArrayList<>();
         String minesFilePath = "plugins/" + MinePlugin.getInstance().getName() + "/mines";
         File minesDir = new File(minesFilePath);
         minesDir.mkdir();
@@ -262,11 +261,12 @@ public class Mine
         return blocksBroken;
     }
 
-    protected void changeBlocksBroken(int blocksBroken) {
+    protected void changeBlocksBroken(int blocksBroken)
+    {
         this.blocksBroken += blocksBroken;
-        if(blocksBroken > shape.getVolume())
+        if(this.blocksBroken > shape.getVolume())
         {
-            blocksBroken = shape.getVolume();
+            this.blocksBroken = shape.getVolume();
         }
     }
 

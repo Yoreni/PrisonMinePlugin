@@ -6,9 +6,9 @@ import com.yoreni.mineplugin.util.*;
 import com.yoreni.mineplugin.util.shape.Shape;
 import com.yoreni.mineplugin.util.shape.ShapeManager;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -25,7 +25,7 @@ import java.util.*;
 
 public class MineCommands implements CommandExecutor, TabCompleter
 {
-    MinePlugin main;
+    final MinePlugin main;
 
     public MineCommands(MinePlugin main)
     {
@@ -134,7 +134,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             final List<String> subcommandBlacklist = Arrays.asList("create", "list", "help");
             if(!subcommandBlacklist.contains(args[0]))
             {
-                List<String> options = new ArrayList<String>();
+                List<String> options = new ArrayList<>();
                 for(Mine mine : Mine.getMines())
                 {
                     options.add(mine.getName());
@@ -145,7 +145,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             else
             {
-                return new ArrayList<String>();
+                return new ArrayList<>();
             }
         }
         else if (args.length == 3)
@@ -167,10 +167,11 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 if(mine != null)
                 {
                     Set<Material> blocks = mine.getCompostion().getBlocks();
-                    List<String> options = new ArrayList<String>();
+                    List<String> options = new ArrayList<>();
                     for(Material block : blocks)
                     {
-                        String materialName = block.getKey().asString().split(":")[1];
+                        //String materialName = block.getKey().asString().split(":")[1]; //paper
+                        String materialName = block.getKey().getKey();
                         options.add(materialName);
                     }
 
@@ -195,7 +196,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
         }
 
-        return new ArrayList<String>();
+        return new ArrayList<>();
     }
 
     private void showHelpMenu(CommandSender sender)
@@ -226,7 +227,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             return;
         }
 
-        Mine mine = Mine.createMine(shape, args[1]);
+        Mine.createMine(shape, args[1]);
 
         MinePlugin.getMessageHandler().sendMessage(sender, "mine-created-success",
                 new Placeholder("%mine%", args[1]));
@@ -349,7 +350,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         Mine mine = validateMine(args[1]);
 
         MessageHandler messageHandler = MinePlugin.getMessageHandler();
-        ArrayList<String> infoLines = new ArrayList<String>();
+        ArrayList<String> infoLines = new ArrayList<>();
         infoLines.add(messageHandler.get("mine-info.title",
                 new Placeholder("%mine%", mine.getName())
         ));
@@ -405,12 +406,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         MessageHandler messageHandler = MinePlugin.getMessageHandler();
 
-        ArrayList<TextComponent> infoLines = new ArrayList<TextComponent>();
+        ArrayList<TextComponent> infoLines = new ArrayList<>();
         TextComponent title = new TextComponent("Mines");
         title.setColor(net.md_5.bungee.api.ChatColor.YELLOW);
         title.setBold(true);
         infoLines.add(title);
-        //TODO net.kyori.adventure.text.Component
+
         for(Mine mine : Mine.getMines())
         {
             TextComponent tc = new TextComponent("  - " + mine.getName());
@@ -418,7 +419,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                     ClickEvent.Action.RUN_COMMAND, "/mines info " + mine.getName()));
             tc.setHoverEvent(
                     new HoverEvent(HoverEvent.Action.SHOW_TEXT
-                            ,new ComponentBuilder(messageHandler.get("mine-list.click-for-info")).create())
+                            ,new Text(messageHandler.get("mine-list.click-for-info")))
             );
 
             infoLines.add(tc);
@@ -631,13 +632,13 @@ public class MineCommands implements CommandExecutor, TabCompleter
     {
         try
         {
-            Class clas = ShapeManager.getShapeClass(type);
+            Class<? extends Shape> clas = ShapeManager.getShapeClass(type);
             if (clas == null)
             {
                 throw new InputMismatchException("invalid-shape");
             }
 
-            return (Shape) clas.getConstructor(Location.class, Location.class, String[].class)
+            return clas.getConstructor(Location.class, Location.class, String[].class)
                     .newInstance(region.getPos1(), region.getPos2(), args);
         }
         catch (Exception exception)

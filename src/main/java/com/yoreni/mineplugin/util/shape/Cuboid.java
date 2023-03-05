@@ -14,7 +14,7 @@ public class Cuboid extends Shape
 
     public Cuboid(Location pos1, Location pos2)
     {
-        if(!pos1.getWorld().equals(pos2.getWorld()))
+        if(!Objects.equals(pos1.getWorld(), pos2.getWorld()))
         {
             throw new IllegalArgumentException("The 2 postions are not in the same world");
         }
@@ -38,16 +38,13 @@ public class Cuboid extends Shape
         this.pos2 = new Location(pos1.getWorld(), highestX, highestY, highestZ);
     }
 
-    public Cuboid(World world, int x1, int y1, int z1, int x2, int y2, int z2)
-    {
-        this(new Location(world, x1, y1, z1), new Location(world,x2,y2,z2));
-    }
-
+    @SuppressWarnings("unused")
     public Cuboid(Location pos1, Location pos2, String... args)
     {
         this(pos1, pos2);
     }
 
+    @SuppressWarnings("SameReturnValue")
     public static String getSName()
     {
         return "cuboid";
@@ -61,7 +58,7 @@ public class Cuboid extends Shape
     @Override
     public List<Location> getBlocks()
     {
-        List<Location> blocks = new ArrayList<Location>();
+        List<Location> blocks = new ArrayList<>();
         for(int x = pos1.getBlockX(); x <= pos2.getBlockX(); x++)
         {
             for(int y = pos1.getBlockY(); y <= pos2.getBlockY(); y++)
@@ -101,7 +98,7 @@ public class Cuboid extends Shape
     @Override
     public boolean isInside(Location loc)
     {
-       if(!loc.getWorld().equals(getWorld()))
+       if(!Objects.equals(loc.getWorld(), getWorld()))
        {
            return false;
        }
@@ -110,10 +107,7 @@ public class Cuboid extends Shape
        {
            if(loc.getBlockY() >= pos1.getBlockY() && loc.getBlockY() <= pos2.getBlockY())
            {
-               if(loc.getBlockZ() >= pos1.getBlockZ() && loc.getBlockZ() <= pos2.getBlockZ())
-               {
-                    return true;
-               }
+               return loc.getBlockZ() >= pos1.getBlockZ() && loc.getBlockZ() <= pos2.getBlockZ();
            }
        }
 

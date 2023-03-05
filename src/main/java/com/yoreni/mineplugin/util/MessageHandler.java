@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MessageHandler
 {
-    private Yml messages;
+    private final Yml messages;
 
     public MessageHandler(Plugin plugin)
     {
@@ -66,7 +66,7 @@ public class MessageHandler
         if(messages.isSet(key))
         {
             List<String> text = messages.getStringList(key);
-            List<String> out = new ArrayList<String>();
+            List<String> out = new ArrayList<>();
 
             if(text.size() == 0)
             {
@@ -74,11 +74,9 @@ public class MessageHandler
             }
             else
             {
-                for(int i = 0; i < text.size(); i++)
+                for (String line : text)
                 {
-                    String line = text.get(i);
-
-                    for(Placeholder placeholder : placeholders)
+                    for (Placeholder placeholder : placeholders)
                     {
                         line = placeholder.apply(line);
                     }
@@ -92,7 +90,7 @@ public class MessageHandler
         }
         else
         {
-            List<String> text = new ArrayList<String>();
+            List<String> text = new ArrayList<>();
             text.add(key);
             return text;
         }

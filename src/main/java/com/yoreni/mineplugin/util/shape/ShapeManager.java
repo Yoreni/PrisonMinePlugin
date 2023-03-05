@@ -7,14 +7,14 @@ import java.util.List;
 
 public class ShapeManager
 {
-    private static List<Class> shapes = new ArrayList<>();
+    private static final List<Class<? extends Shape>> shapes = new ArrayList<>();
 
     private ShapeManager()
     {
 
     }
 
-    public static void registerShape(Class shape)
+    public static void registerShape(Class<? extends Shape> shape)
     {
         if (shape.getSuperclass() != Shape.class)
             return;
@@ -36,7 +36,7 @@ public class ShapeManager
     {
         try
         {
-            Class shapeClass = getShapeClass((String) file.get(path + ".shape"));
+            Class<? extends Shape> shapeClass = getShapeClass((String) file.get(path + ".shape"));
             Object shape = shapeClass.getMethod("readFromYaml", Yml.class, String.class)
                     .invoke(null, file, path);
             return (Shape) shape;
@@ -53,9 +53,9 @@ public class ShapeManager
     {
         try
         {
-            List<String> out = new ArrayList<String>();
+            List<String> out = new ArrayList<>();
 
-            for (Class clas : shapes)
+            for (Class<? extends Shape> clas : shapes)
             {
                 out.add(getShapeName(clas));
             }
@@ -69,11 +69,11 @@ public class ShapeManager
         }
     }
 
-    public static Class getShapeClass(String shapeName)
+    public static Class<? extends Shape> getShapeClass(String shapeName)
     {
         try
         {
-            for (Class clas : shapes)
+            for (Class<? extends Shape> clas : shapes)
             {
                 if (getShapeName(clas).equals(shapeName))
                 {
@@ -88,7 +88,7 @@ public class ShapeManager
         return null;
     }
 
-    private static String getShapeName(Class shape)
+    private static String getShapeName(Class<? extends Shape> shape)
     {
         try
         {

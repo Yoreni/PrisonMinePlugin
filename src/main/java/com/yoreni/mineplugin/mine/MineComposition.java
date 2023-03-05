@@ -1,7 +1,6 @@
 package com.yoreni.mineplugin.mine;
 
 import com.yoreni.mineplugin.util.Yml;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,7 +21,7 @@ public class MineComposition
 
     public MineComposition()
     {
-        compostion = new HashMap<Material, Double>();
+        compostion = new HashMap<>();
     }
 
     /**
@@ -126,7 +125,7 @@ public class MineComposition
      */
     public void removeAllBlocks()
     {
-        compostion = new HashMap<Material, Double>();
+        compostion = new HashMap<>();
     }
 
     /**

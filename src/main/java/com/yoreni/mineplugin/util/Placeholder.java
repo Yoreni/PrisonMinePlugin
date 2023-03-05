@@ -2,8 +2,8 @@ package com.yoreni.mineplugin.util;
 
 public class Placeholder
 {
-    private String placeholder;
-    private String value;
+    private final String placeholder;
+    private final String value;
 
     public Placeholder(String placeholder, String value)
     {

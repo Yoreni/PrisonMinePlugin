@@ -9,11 +9,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class UpdateMines extends BukkitRunnable
 {
-    public UpdateMines()
-    {
-
-    }
-
     @Override
     public void run()
     {

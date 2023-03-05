@@ -1,11 +1,7 @@
 package com.yoreni.mineplugin.util;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
@@ -22,7 +18,7 @@ public class Yml
 {
     FileConfiguration config = null;
     File file = null;
-    Plugin plugin;
+    final Plugin plugin;
 
     public Yml(Plugin plugin, String path)
     {
@@ -206,15 +202,7 @@ public class Yml
         {
             config.load(file);
         }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-        catch (InvalidConfigurationException e)
+        catch (IOException | InvalidConfigurationException e)
         {
             e.printStackTrace();
         }
@@ -240,7 +228,7 @@ public class Yml
 
         try
         {
-            ConfigUpdater.update(plugin, file.getName(), file, Arrays.asList("config-version"));
+            ConfigUpdater.update(plugin, file.getName(), file, List.of("config-version"));
         }
         catch (IOException e)
         {
@@ -277,13 +265,13 @@ public class Yml
             return path;
         }
 
-        String out = "";
+        StringBuilder out = new StringBuilder();
         for(int i = 0; i < path.split("//.").length - 1; i++)
         {
-            out += path.split("//.")[i];
+            out.append(path.split("//.")[i]);
         }
 
-        return out;
+        return out.toString();
     }
 }
 
@@ -552,9 +540,10 @@ class ConfigUpdater
             else if (value instanceof List)
             {
                 builder.append(getListAsString((List) value, actualKey, prefixSpaces.toString(), yaml));
-            } else
+            }
+            else
             {
-                builder.append(prefixSpaces.toString()).append(actualKey).append(": ").append(yaml.dump(value));
+                builder.append(prefixSpaces).append(actualKey).append(": ").append(yaml.dump(value));
             }
         }
     }

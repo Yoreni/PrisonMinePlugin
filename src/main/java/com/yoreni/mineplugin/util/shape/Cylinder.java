@@ -4,35 +4,33 @@ import com.yoreni.mineplugin.util.Yml;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+
+import java.util.*;
 
 public class Cylinder extends Shape
 {
-    private Location center;
-    private double xRadius;
-    private double zRadius;
-    private int height;
+    private final Location center;
+    private final double xRadius;
+    private final double zRadius;
+    private final int height;
 
     private int volume = 0;
 
     public Cylinder(Location pos1, Location pos2)
     {
-        if(!pos1.getWorld().equals(pos2.getWorld()))
+        if(!Objects.equals(pos1.getWorld(), pos2.getWorld()))
         {
             throw new IllegalArgumentException("The 2 postions are not in the same world");
         }
 
         World world = pos1.getWorld();
-        double midX = (pos1.getBlockX() + pos2.getBlockX()) / 2;
+        double midX = (pos1.getBlockX() + pos2.getBlockX()) / 2d;
         double lowY = Math.min(pos1.getBlockY(), pos2.getBlockY());
-        double midZ = (pos1.getBlockZ() + pos2.getBlockZ()) / 2;
+        double midZ = (pos1.getBlockZ() + pos2.getBlockZ()) / 2d;
         center = new Location(world, midX, lowY, midZ);
 
-        xRadius = (Math.abs(pos1.getBlockX() - pos2.getBlockX()) / 2) + 0.5;
-        zRadius = (Math.abs(pos1.getBlockZ() - pos2.getBlockZ()) / 2) + 0.5;
+        xRadius = (Math.abs(pos1.getBlockX() - pos2.getBlockX()) / 2d) + 0.5;
+        zRadius = (Math.abs(pos1.getBlockZ() - pos2.getBlockZ()) / 2d) + 0.5;
         height = Math.abs(pos1.getBlockY() - pos2.getBlockY()) + 1;
     }
 
@@ -53,7 +51,7 @@ public class Cylinder extends Shape
     public List<Location> getBlocks()
     {
         // yes i basicly just stole the world edit code.
-        List<Location> blocks = new ArrayList<Location>();
+        List<Location> blocks = new ArrayList<>();
 
         final double invRadiusX = 1 / xRadius;
         final double invRadiusZ = 1 / zRadius;
@@ -145,7 +143,7 @@ public class Cylinder extends Shape
     @Override
     public boolean isInside(Location loc)
     {
-        if(!loc.getWorld().equals(getWorld()))
+        if(!Objects.equals(loc.getWorld(), getWorld()))
         {
             return false;
         }
@@ -163,14 +161,7 @@ public class Cylinder extends Shape
 
             double distanceSq = (xn * xn) + (zn * zn);
 
-            if(distanceSq > 1)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return distanceSq <= 1;
         }
 
         return false;
@@ -186,7 +177,7 @@ public class Cylinder extends Shape
             return volume;
         }
 
-        Set<Location> blocks = new HashSet<Location>();
+        Set<Location> blocks = new HashSet<>();
 
         final double invRadiusX = 1 / xRadius;
         final double invRadiusZ = 1 / zRadius;
