@@ -17,7 +17,6 @@ public final class MinePlugin extends JavaPlugin
 {
     public static WorldEditPlugin WORLD_EDIT = null;
     private static MinePlugin instance;
-    private static MessageHandler messageHandler;
     private static Yml config;
 
     @Override
@@ -51,11 +50,6 @@ public final class MinePlugin extends JavaPlugin
         return instance;
     }
 
-    public static MessageHandler getMessageHandler()
-    {
-        return messageHandler;
-    }
-
     public static Yml getConfigFile() {
         return config;
     }
@@ -70,7 +64,7 @@ public final class MinePlugin extends JavaPlugin
     {
         config = new Yml(this, "config");
         config.setDefaultsFromJar();
-        messageHandler = new MessageHandler(this);
+        MessageHandler.initialise(this);
     }
 
     private void setupWorldEdit()

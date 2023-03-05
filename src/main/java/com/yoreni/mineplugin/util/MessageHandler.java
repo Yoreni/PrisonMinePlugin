@@ -12,12 +12,28 @@ import java.util.List;
 
 public class MessageHandler
 {
+    private static MessageHandler instance;
+
     private final Yml messages;
 
-    public MessageHandler(Plugin plugin)
+    private MessageHandler(Plugin plugin)
     {
         messages = new Yml(plugin, "messages");
         messages.setDefaultsFromJar();
+    }
+
+    public static boolean initialise(Plugin plugin)
+    {
+        if (instance != null)
+            return false;
+
+        instance = new MessageHandler(plugin);
+        return true;
+    }
+
+    public static MessageHandler getInstance()
+    {
+        return instance;
     }
 
     /**

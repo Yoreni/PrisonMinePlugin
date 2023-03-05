@@ -58,7 +58,7 @@ public class Util
         String percent = toCommas(number);
 
         //some langauges write percentages in differnt ways this is so it acounts for that
-        percent = MinePlugin.getMessageHandler().get("number.percent-format",
+        percent = MessageHandler.getInstance().get("number.percent-format",
                 new Placeholder("number", percent));
 
         return percent;
@@ -95,25 +95,25 @@ public class Util
 
         if(milliseconds < 60_000)
         {
-            return MinePlugin.getMessageHandler().get("number.time.seconds",
+            return MessageHandler.getInstance().get("number.time.seconds",
                     Arrays.copyOfRange(placeholders, 0, 2)
             );
         }
         else if(milliseconds < 3_600_000)
         {
-            return MinePlugin.getMessageHandler().get("number.time.minutes",
+            return MessageHandler.getInstance().get("number.time.minutes",
                     Arrays.copyOfRange(placeholders, 0, 4)
             );
         }
         else if(milliseconds < 86_400_000)
         {
-            return MinePlugin.getMessageHandler().get("number.time.hours",
+            return MessageHandler.getInstance().get("number.time.hours",
                     Arrays.copyOfRange(placeholders, 0, 6)
             );
         }
         else
         {
-            return MinePlugin.getMessageHandler().get("number.time.days",
+            return MessageHandler.getInstance().get("number.time.days",
                     placeholders
             );
         }
@@ -138,8 +138,8 @@ public class Util
             other languages use different symbols for decimal points and thousand separators
             so tis accounts for this
          */
-        final String thousandsSeperator = MinePlugin.getMessageHandler().get("number.thousand-separator");
-        final String decimalPoint = MinePlugin.getMessageHandler().get("number.decimal-point");
+        final String thousandsSeperator = MessageHandler.getInstance().get("number.thousand-separator");
+        final String decimalPoint = MessageHandler.getInstance().get("number.decimal-point");
 
         commaNumber = commaNumber.replace(",", "a").replace(".", "b");
         commaNumber = commaNumber.replace("a", thousandsSeperator).replace("b", decimalPoint);

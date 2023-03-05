@@ -106,7 +106,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
             catch(InputMismatchException exception)
             {
-                MinePlugin.getMessageHandler().sendMessage(sender, exception.getMessage());
+                MessageHandler.getInstance().sendMessage(sender, exception.getMessage());
                 return true;
             }
         }
@@ -201,7 +201,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
     private void showHelpMenu(CommandSender sender)
     {
-        MinePlugin.getMessageHandler().sendMessage(sender, "help-menu");
+        MessageHandler.getInstance().sendMessage(sender, "help-menu");
     }
 
     private void handleCreateSubcommand(CommandSender sender, String[] args)
@@ -222,14 +222,14 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         if(Mine.get(args[1]) != null)
         {
-            MinePlugin.getMessageHandler().sendMessage(sender, "pick-another-name",
+            MessageHandler.getInstance().sendMessage(sender, "pick-another-name",
                     new Placeholder("%mine%", args[1]));
             return;
         }
 
         Mine.createMine(shape, args[1]);
 
-        MinePlugin.getMessageHandler().sendMessage(sender, "mine-created-success",
+        MessageHandler.getInstance().sendMessage(sender, "mine-created-success",
                 new Placeholder("%mine%", args[1]));
     }
 
@@ -250,7 +250,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         double percent = Double.parseDouble(args[3]) / 100;
         mine.getCompostion().addBlock(block, percent);
 
-        MinePlugin.getMessageHandler().sendMessage(sender, "block-add-success",
+        MessageHandler.getInstance().sendMessage(sender, "block-add-success",
                 new Placeholder("%mine%", mine.getName()),
                 new Placeholder("%percentfilled%", Util.doubleToPercent(percent, 2)),
                 new Placeholder("%block%", Util.materialToEnglish(block)),
@@ -276,7 +276,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         if(args[2].equals("*"))
         {
             mine.getCompostion().removeAllBlocks();
-            MinePlugin.getMessageHandler().sendMessage(sender, "every-block-remove-success",
+            MessageHandler.getInstance().sendMessage(sender, "every-block-remove-success",
                     new Placeholder("%mine%", mine.getName()));
             return;
         }
@@ -286,7 +286,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         if(mine.getCompostion().hasBlock(block))
         {
             mine.getCompostion().removeBlock(block);
-            MinePlugin.getMessageHandler().sendMessage(sender, "block-remove-success",
+            MessageHandler.getInstance().sendMessage(sender, "block-remove-success",
                     new Placeholder("%mine%", mine.getName()),
                     new Placeholder("%block%", Util.materialToEnglish(block)),
                     new Placeholder("%percentleft%", Util.doubleToPercent(1 - mine.getCompostion().getTotalComostion(), 2)));
@@ -309,7 +309,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         Mine mine = validateMine(args[1]);
 
         mine.reset();
-        MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-success",
+        MessageHandler.getInstance().sendMessage(sender, "mine-reset-success",
                 new Placeholder("%mine%", args[1]));
     }
 
@@ -331,7 +331,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
                 createShape(region, args[2], Arrays.copyOfRange(args, 3, args.length));
 
         mine.setShape(shape);
-        MinePlugin.getMessageHandler().sendMessage(sender, "mine-resize-success",
+        MessageHandler.getInstance().sendMessage(sender, "mine-resize-success",
                 new Placeholder("%mine%", mine.getName()));
     }
 
@@ -349,7 +349,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         Mine mine = validateMine(args[1]);
 
-        MessageHandler messageHandler = MinePlugin.getMessageHandler();
+        MessageHandler messageHandler = MessageHandler.getInstance();
         ArrayList<String> infoLines = new ArrayList<>();
         infoLines.add(messageHandler.get("mine-info.title",
                 new Placeholder("%mine%", mine.getName())
@@ -404,7 +404,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
             throw new InputMismatchException("no-perms");
         }
 
-        MessageHandler messageHandler = MinePlugin.getMessageHandler();
+        MessageHandler messageHandler = MessageHandler.getInstance();
 
         ArrayList<TextComponent> infoLines = new ArrayList<>();
         TextComponent title = new TextComponent("Mines");
@@ -455,7 +455,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         String newName = args[2];
         if(Mine.get(newName) != null)
         {
-            MinePlugin.getMessageHandler().sendMessage(sender, "pick-another-name",
+            MessageHandler.getInstance().sendMessage(sender, "pick-another-name",
                     new Placeholder("%mine%", args[1]));
             return;
         }
@@ -465,7 +465,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         yaml.set("name", newName);
         mine.setName(newName);
 
-        MinePlugin.getMessageHandler().sendMessage(sender, "mine-rename-success",
+        MessageHandler.getInstance().sendMessage(sender, "mine-rename-success",
                 new Placeholder("%oldname%", args[1]),
                 new Placeholder("%newname%", newName));
     }
@@ -489,12 +489,12 @@ public class MineCommands implements CommandExecutor, TabCompleter
             Yml yaml = new Yml(MinePlugin.getInstance(), "mines/" + mine.getName());
             yaml.delete();
             Mine.getMines().remove(mine);
-            MinePlugin.getMessageHandler().sendMessage(sender, "mine-delete-success",
+            MessageHandler.getInstance().sendMessage(sender, "mine-delete-success",
                     new Placeholder("%mine%", mine.getName()));
         }
         else
         {
-            MinePlugin.getMessageHandler().sendMessage(sender, "mine-delete-prompt",
+            MessageHandler.getInstance().sendMessage(sender, "mine-delete-prompt",
                     new Placeholder("%mine%", mine.getName()));
         }
     }
@@ -532,13 +532,13 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
             if(resetInterval > 0)
             {
-                MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-change-success",
+                MessageHandler.getInstance().sendMessage(sender, "mine-reset-interval-change-success",
                         new Placeholder("%mine%", args[1]),
                         new Placeholder("%time%", String.valueOf(resetInterval)));
                 return;
             }
 
-            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
+            MessageHandler.getInstance().sendMessage(sender, "mine-reset-interval-disable-success",
                     new Placeholder("%mine%", args[1]));
         }
         else if (args[3].equalsIgnoreCase("percent"))
@@ -556,14 +556,14 @@ public class MineCommands implements CommandExecutor, TabCompleter
             }
 
             mine.setResetPercentage(resetPercentage);
-            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-percent-change-success",
+            MessageHandler.getInstance().sendMessage(sender, "mine-reset-percent-change-success",
                     new Placeholder("%mine%", args[1]),
                     new Placeholder("%percent%", Util.doubleToPercent(resetPercentage / 100D, 0)));
         }
         else if (args[3].equalsIgnoreCase("disable"))
         {
             mine.disableAutoReset();
-            MinePlugin.getMessageHandler().sendMessage(sender, "mine-reset-interval-disable-success",
+            MessageHandler.getInstance().sendMessage(sender, "mine-reset-interval-disable-success",
                     new Placeholder("%mine%", args[1]));
         }
     }
@@ -586,7 +586,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         Location teleportPosition = new Location(world, x, y, z, loc.getYaw(), loc.getPitch());
 
         mine.setTeleportPosition(teleportPosition);
-        MinePlugin.getMessageHandler().sendMessage(sender, "mine-tp-location-change-success",
+        MessageHandler.getInstance().sendMessage(sender, "mine-tp-location-change-success",
                 new Placeholder("%mine%", args[1]),
                 new Placeholder("%x%", String.valueOf(x)),
                 new Placeholder("%y%", String.valueOf(y)),
@@ -599,7 +599,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         Mine mine = Mine.get(mineName);
         if(mine == null)
         {
-            String message = MinePlugin.getMessageHandler().get("invalid-mine",
+            String message = MessageHandler.getInstance().get("invalid-mine",
                     new Placeholder("%mine%", mineName));
             throw new InputMismatchException(message);
         }
