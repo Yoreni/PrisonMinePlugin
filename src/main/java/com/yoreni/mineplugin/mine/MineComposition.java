@@ -129,11 +129,11 @@ public class MineComposition
     }
 
     /**
-     * returns true or false based on whether the block is in the compostion
+     * returns true or false based on whether the block is in the composition
      * or not
      *
-     * @param block
-     * @return
+     * @param block a material
+     * @return true if its in the composition
      */
     public boolean hasBlock(Material block)
     {
@@ -160,7 +160,7 @@ public class MineComposition
     /**
      * gets the total percent of blocks in the composition
      *
-     * @return
+     * @return a number between 0 and 1. the total amount of the composition filled with blocks
      */
     public double getTotalComostion()
     {
@@ -177,13 +177,13 @@ public class MineComposition
 
     public int getCount()
     {
-        return getBlocks().size();
+        return compostion.size();
     }
 
     /**
-     * randomly picks the next block based of the compition
+     * randomly picks the next block based of the composition
      *
-     * @return
+     * @return randomly picks the next block based of the composition
      */
     public Material getNextBlock()
     {

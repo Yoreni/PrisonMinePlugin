@@ -13,10 +13,10 @@
 3α - 2/1/2022
   - added /mines rename so you can rename mines
 4α - 3/1/2022
-  - added the ablity to delete mines with /mines delete
+  - added the ability to delete mines with /mines delete
 5α - 5/1/2022
   - moved the mine composition class to its own file
-  - the mines now know much of them have been mined
+  - the mines now know how much of them have been mined
   - the mines can automatically reset if a specified % of the mine has been mined
 5.1α - 6/1/2022
   - added /mines rename and /mines delete to the help menu
@@ -27,8 +27,9 @@
   - made it easier to add new shapes without changing the code
   - made it so users can change the format of timeFormat in messages.yml
 
-7α - IN PROGRESS
+6.1α - 20/5/2024
   - fixed bug where the plugin would crash if the mine didnt have a composition defined
+  - The mine info command explicitly says the mine is empty if it has no blocks
 
 TODO
  - add spigot support

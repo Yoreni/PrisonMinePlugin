@@ -18,7 +18,7 @@ mine-reset-interval-change-success: "%mine% will now reset every %time% minute(s
 mine-reset-interval-disable-success: "The reset interval for %mine% has been disabled"
 mine-reset-percent-change-success: "%mine% will now reset when it has less than %percent% of its blocks left."
 mine-reset-percent-invalid-number: "Invalid reset percentage! Please input a number between 0-99."
-mine-tp-location-change-success: "The teleport location of %mine% has been set at %x% %y% %z% in %world%"
+mine-tp-location-change-success: "The teleport location of %mine% has been set at %x%, %y%, %z% in %world%"
 mine-info:
   title: "&e&lMine %mine%"
   mined-info: "%mined% / %volume% blocks mined &7(%percentmined% left)"
@@ -26,6 +26,7 @@ mine-info:
   reset-info-percentage: "Resets when this mine has less than %resetpercentage% of its blocks"
   contents: "Contents"
   block-list: " - %block% %percent%"
+  block-list-empty: " &7&o(empty) &rUse '/mines add %mine% <block> <percent>' to add blocks"
 mine-list:
   click-for-info: "Click here to show more info about this mine"
   contents: "Contents"

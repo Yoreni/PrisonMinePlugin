@@ -1,6 +1,7 @@
 package com.yoreni.mineplugin;
 
 import com.yoreni.mineplugin.mine.Mine;
+import com.yoreni.mineplugin.mine.MineComposition;
 import com.yoreni.mineplugin.mine.MineResetCondition;
 import com.yoreni.mineplugin.util.*;
 import com.yoreni.mineplugin.util.shape.Shape;
@@ -217,7 +218,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
         }
 
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = args.length < 3 ? createShape(region,"cuboid", null) :
+        Shape shape = args.length < 3 ? createShape(region,"cuboid") :
                                         createShape(region, args[2], Arrays.copyOfRange(args, 3, args.length));
 
         if(Mine.get(args[1]) != null)
@@ -327,7 +328,7 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         Mine mine = validateMine(args[1]);
         WorldEditRegion region = getWERegion((Player) sender);
-        Shape shape = args.length < 3 ? createShape(region,mine.getShape().getName(), null) :
+        Shape shape = args.length < 3 ? createShape(region,mine.getShape().getName()) :
                 createShape(region, args[2], Arrays.copyOfRange(args, 3, args.length));
 
         mine.setShape(shape);
@@ -349,6 +350,14 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         Mine mine = validateMine(args[1]);
 
+        for(String line : buildMineInfoText(mine))
+        {
+            sender.sendMessage(line);
+        }
+    }
+
+    private List<String> buildMineInfoText(Mine mine)
+    {
         MessageHandler messageHandler = MessageHandler.getInstance();
         ArrayList<String> infoLines = new ArrayList<>();
         infoLines.add(messageHandler.get("mine-info.title",
@@ -379,22 +388,27 @@ public class MineCommands implements CommandExecutor, TabCompleter
 
         infoLines.add("");
         infoLines.add(messageHandler.get("mine-info.contents"));
-        for(Material block : mine.getCompostion().getBlocks())
+        MineComposition composition = mine.getCompostion();
+        if (composition.getCount() == 0)
         {
-            String blockName = Util.materialToEnglish(block);
-            String formattedPercent = Util.doubleToPercent(mine.getCompostion().getChance(block), 2);
+            infoLines.add(messageHandler.get("mine-info.block-list-empty"
+                    , new Placeholder("%mine%", mine.getName())));
+        }
+        else
+        {
+            for (Material block : composition.getBlocks())
+            {
+                String blockName = Util.materialToEnglish(block);
+                String formattedPercent = Util.doubleToPercent(mine.getCompostion().getChance(block), 2);
 
-            String text = messageHandler.get("mine-info.block-list",
-                    new Placeholder("%block%", blockName),
-                    new Placeholder("%percent%", formattedPercent));
-            infoLines.add(text);
+                String text = messageHandler.get("mine-info.block-list",
+                        new Placeholder("%block%", blockName),
+                        new Placeholder("%percent%", formattedPercent));
+                infoLines.add(text);
+            }
         }
 
-        //print it to the player
-        for(String line : infoLines)
-        {
-            sender.sendMessage(line);
-        }
+        return infoLines;
     }
 
     private void handleListSubcommand(CommandSender sender, String[] args)
