@@ -193,7 +193,10 @@ public class Yml
 
     public @NotNull Map<String, Object> getValues(String path)
     {
-        return config.getConfigurationSection(path).getValues(true);
+        ConfigurationSection section = config.getConfigurationSection(path);
+        if (section == null)
+            return new HashMap<>();
+        return section.getValues(true);
     }
 
     public void reload()

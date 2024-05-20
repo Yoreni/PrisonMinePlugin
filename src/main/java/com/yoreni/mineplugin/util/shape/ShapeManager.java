@@ -49,6 +49,9 @@ public class ShapeManager
         return null;
     }
 
+    /**
+     * @return a list of the names of all shapes registered
+     */
     public static List<String> getShapeNames()
     {
         try
@@ -65,7 +68,7 @@ public class ShapeManager
         catch (Exception exception)
         {
             exception.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 

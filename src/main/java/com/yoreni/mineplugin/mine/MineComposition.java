@@ -34,7 +34,6 @@ public class MineComposition
      */
     public static MineComposition readFromYaml(Yml file, String path)
     {
-        //file.setPathPrefix(path);
         MineComposition mineComostion = new MineComposition();
 
         @NotNull Map<String, Object> map = file.getValues(path);
@@ -62,24 +61,25 @@ public class MineComposition
      */
     public void writeToYaml(Yml file, String path)
     {
-        //file.setPathPrefix(path);
-
         if(file.isSet(path))
         {
             //this removes the blocks in the mine of the config file that isnt in the compistion list
             //this is to stop the mines messing up when a block has been removed
             @NotNull Map<String, Object> existingBlocksInFile = file.getValues(path);
-            for (String key : existingBlocksInFile.keySet()) {
+            for (String key : existingBlocksInFile.keySet())
+            {
                 Material block = Material.getMaterial(key);
-                if (block != null) {
-                    if (!hasBlock(block)) {
+                if (block != null)
+                {
+                    if (!hasBlock(block))
                         file.set(block.toString(), 0D);
-                    }
+
                 }
             }
         }
 
         //add new blocks or changing them if there are any
+        //for (Map.Entry<String, Integer> entry : map.entrySet())
         for(Material block : compostion.keySet())
         {
             double chance = compostion.get(block);
@@ -173,6 +173,11 @@ public class MineComposition
         }
 
         return sum;
+    }
+
+    public int getCount()
+    {
+        return getBlocks().size();
     }
 
     /**

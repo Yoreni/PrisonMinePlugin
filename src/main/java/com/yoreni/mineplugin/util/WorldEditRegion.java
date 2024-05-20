@@ -24,9 +24,9 @@ public class WorldEditRegion
 
     public WorldEditRegion(Player player)
     {
-        if (MinePlugin.WORLD_EDIT != null && MinePlugin.WORLD_EDIT.getSession(player) != null)
+        if (MinePlugin.getWorldEdit() != null && MinePlugin.getWorldEdit().getSession(player) != null)
         {
-            WorldEditPlugin worldEdit = MinePlugin.WORLD_EDIT;
+            WorldEditPlugin worldEdit = MinePlugin.getWorldEdit() ;
             LocalSession session = worldEdit.getSession(player);
             com.sk89q.worldedit.world.World weWorld = session.getSelectionWorld();
             try

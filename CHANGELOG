@@ -27,6 +27,9 @@
   - made it easier to add new shapes without changing the code
   - made it so users can change the format of timeFormat in messages.yml
 
+7α - IN PROGRESS
+  - fixed bug where the plugin would crash if the mine didnt have a composition defined
+
 TODO
  - add spigot support
 

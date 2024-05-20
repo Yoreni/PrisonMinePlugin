@@ -15,7 +15,7 @@ import com.yoreni.mineplugin.util.MessageHandler;
 
 public final class MinePlugin extends JavaPlugin
 {
-    public static WorldEditPlugin WORLD_EDIT = null;
+    private static WorldEditPlugin WORLD_EDIT;
     private static MinePlugin instance;
     private static Yml config;
 
@@ -36,13 +36,10 @@ public final class MinePlugin extends JavaPlugin
         Bukkit.getPluginManager().registerEvents(new MineListener(), this);
     }
 
-
-
     @Override
     public void onDisable()
     {
         Mine.saveMines();
-        // Plugin shutdown logic
     }
 
     public static MinePlugin getInstance()
@@ -52,6 +49,11 @@ public final class MinePlugin extends JavaPlugin
 
     public static Yml getConfigFile() {
         return config;
+    }
+
+    public static WorldEditPlugin getWorldEdit()
+    {
+        return WORLD_EDIT;
     }
 
     private void registerCommands()
@@ -70,8 +72,6 @@ public final class MinePlugin extends JavaPlugin
     private void setupWorldEdit()
     {
         if (getServer().getPluginManager().isPluginEnabled("WorldEdit"))
-        {
             WORLD_EDIT = (WorldEditPlugin) getServer().getPluginManager().getPlugin("WorldEdit");
-        }
     }
 }
